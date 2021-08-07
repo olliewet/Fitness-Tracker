@@ -1,9 +1,9 @@
 ﻿@inject UserManager<ApplicationUser> userManager
 @using Microsoft.AspNetCore.Identity
 
-@model ExerciseTracker
+@model List<ExerciseTracker>
 @{
-    ViewData["Title"] = "Select Muscle Group";
+    ViewData["Title"] = "Select Exercise";
 }
 
 <body>
@@ -34,12 +34,12 @@
 
                 <tbody class="userTable">
 
-                    @foreach (string value in Enum.GetNames(typeof(ExerciseTracker.MuscleGroups)))
+                    @foreach (ExerciseTracker exercise in Model)
                     {
                         <tr>
-                            <td id="ExerciseType">@value</td>
+                            <td id="ExerciseType">@exercise.ExerciseName</td>
                             <td id="selection">
-                                <button onclick="location.href = '@Html.Raw(Url.Action("SelectExercise", "ExerciseManager", new {ExerciseType = @value}))'" class="btn btn-success">Select Page</button>
+                                <button onclick="location.href = ''" class="btn btn-success">Select Page</button>
                             </td>
                         </tr>
                     }

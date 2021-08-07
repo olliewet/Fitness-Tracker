@@ -33,9 +33,24 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<IActionResult> FitnessTrackerAsync()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            exerciseTrackerDB.GetExercisesFromGroup(user.Id, ExerciseTracker.MuscleGroups.Legs);
             ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, "Squat");
-
             return View();
+        }
+
+        public async Task<ExerciseTracker> AddDatabaseTest()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            ExerciseTracker exercise = new ExerciseTracker()
+            {
+                Id = user.Id,
+                Date = DateTime.Now,
+                ExerciseName = "Squat",
+                Weight = 400,
+                PersonalBest = true,
+                TypeOfExercise = ExerciseTracker.MuscleGroups.Legs
+            };
+            return exercise;
         }
         public IActionResult Privacy()
         {
