@@ -39,7 +39,7 @@
                         <tr>
                             <td id="ExerciseType">@exercise.ExerciseName</td>
                             <td id="selection">
-                                <button onclick="location.href = ''" class="btn btn-success">Select Page</button>
+                                <button onclick="location.href = '@Html.Raw(Url.Action("ManageExecerise", "ExerciseManager", @exercise))'" class="btn btn-success">Select Page</button>
                             </td>
                         </tr>
                     }

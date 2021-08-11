@@ -13,6 +13,7 @@ namespace TrackHealthAndFitness.Models
         public string ExerciseName { get; set; }
         public bool PersonalBest { get; set; }
         public int Weight { get; set; }
+        public int Reps { get; set; }
         public DateTime Date { get; set; }
 
         public enum MuscleGroups
@@ -42,7 +43,7 @@ namespace TrackHealthAndFitness.Models
         /// Add Exercise To Database 
         /// </summary>
         /// <param name="exercise"></param>
-        public async void AddExercise(ExerciseTracker exercise)
+        public async Task AddExercise(ExerciseTracker exercise)
         {
             _context.ExecriseTracker.Add(exercise);
             await _context.SaveChangesAsync();
@@ -93,9 +94,9 @@ namespace TrackHealthAndFitness.Models
         {
             List<ExerciseTracker> exercisesList = new List<ExerciseTracker>();
             var data = _context.ExecriseTracker.AsQueryable();
-            data = data.Where(c => c.Id == userID && c.TypeOfExercise == muscleGroups);
+            data = data.Where(c => c.Id == userID && c.TypeOfExercise == muscleGroups && c.PersonalBest == true);
             foreach (var item in data)
-            {
+            {              
                 exercisesList.Add(item);
             }
             return exercisesList;

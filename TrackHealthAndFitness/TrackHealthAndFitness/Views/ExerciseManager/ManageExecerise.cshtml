@@ -1,0 +1,129 @@
+﻿@inject UserManager<ApplicationUser> userManager
+@using Microsoft.AspNetCore.Identity
+@model ExerciseTracker 
+
+@{
+    ViewData["Title"] = "Select Exercise";
+}
+
+<body>
+    <!-- Tab links -->
+    <div class="tab">
+        <button class="button" onclick="openTab(event, 'Track')" id="defaultOpen">Track</button>
+        <button class="button" onclick="openTab(event, 'History')">History</button>
+  
+    </div>
+
+    <!-- Tab content -->
+    <div id="Track" class="tabcontent">
+        <div class="tile is-ancestor" style="margin-left: 20%; margin-right: 20%;">
+            <!--First Column-->
+            <div class="tile is-parent">
+                <!--Getting the Type Of Content From the User-->
+                <article class="tile is-child is-12 notification content-box-boxshadow is-link">
+                    <form>
+                        <div class="form-group">
+                            <label for="">Weight (kgs)</label>
+                            <input type="text" class="form-control" id="enterWeight" value="" placeholder="Enter Weight">
+                        </div>
+                    </form>
+                    <form>
+                        <div class="form-group">
+                            <label for="">Reps</label>
+                            <input type="text" class="form-control" id="enterReps" value="" placeholder="Enter Reps">
+                        </div>
+                    </form>                  
+                    <!-- Submit Button -->
+                    <div>
+                        <button class="button is-purple" onclick="SubmitExercise();">Submit</button>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <p></p>
+    </div>
+
+    <div id="History" class="tabcontent">
+        <div id="main">
+            <div class="columns">
+                <div class="column">
+                    <article class="tile notification is-white white-box">
+                        <div id="navButtons">
+
+                        </div>
+                    </article>
+                </div>
+                <div class="column">
+                    <article class="tile notification is-white white-box">
+                        <p class="subtitle"></p>
+                    </article>
+                </div>
+            </div>
+            <div class="gap-10"></div>
+            <article class="tile notification is-white white-box users-box">
+                <table id="usersTable" class="table">
+                    <thead>
+                        <tr id="head" class="head">
+                            <th scope="col">Muscle Group</th>
+                            <th scope="col">Select</th>
+                        </tr>
+                    </thead>
+                    <tbody class="userTable">
+                        <tr>
+                            <td id="ExerciseType"></td>
+                            <td id="selection">
+                                <button onclick="location.href = ''" class="btn btn-success">Select Page</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </article>
+        </div>
+    </div>
+
+
+
+    
+</body>
+<script>
+    document.getElementById("defaultOpen").click();
+
+  
+
+    function openTab(evt, tabName) {
+        // Declare all variables
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    function SubmitExercise() {
+        var url = "exercisemanager/api/addexecerise";
+        //Update to New Controller
+        const progress = {
+            muscle: '@Model.TypeOfExercise',
+            exerciseName:'@Model.ExerciseName',
+            Weight: document.getElementById('enterWeight').value,
+            Reps: document.getElementById('enterReps').value
+        };
+        $.post( "/ExerciseManager/AddExecerise",progress,function(data) {
+                RedirectToPage('@Html.Raw(Url.Action("SelectExercise", "ExerciseManager"))');
+            });
+    }
+
+
+</script>
