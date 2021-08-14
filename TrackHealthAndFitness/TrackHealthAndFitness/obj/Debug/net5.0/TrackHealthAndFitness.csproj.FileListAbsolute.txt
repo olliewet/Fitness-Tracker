@@ -199,3 +199,4 @@ C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFit
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\Home\FitnessTracker.cshtml.g.cs
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\SelectExercise.cshtml.g.cs
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\ManageExecerise.cshtml.g.cs
+C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\AddNewExecerise.cshtml.g.cs

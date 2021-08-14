@@ -61,7 +61,7 @@ namespace TrackHealthAndFitness.Models
             _context.DifferentExercises.Update(exercise);
             await _context.SaveChangesAsync();
         }
-        public List<DifferentExercise> GetExercisesFromGroup(string userID, DifferentExercise.MuscleGroups muscleGroups)
+        public List<DifferentExercise> GetExercisesFromGroup(DifferentExercise.MuscleGroups muscleGroups)
         {
             List<DifferentExercise> exercisesList = new List<DifferentExercise>();
             var data = _context.DifferentExercises.AsQueryable();

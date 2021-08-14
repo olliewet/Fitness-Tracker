@@ -12,7 +12,7 @@
             <div class="column">
                 <article class="tile notification is-white white-box">
                     <div id="navButtons">
-
+                        <button onclick="location.href = '@Html.Raw(Url.Action("AddNewExecerise", "ExerciseManager"))'" class="btn btn-success">Add Exercise</button>
                     </div>
                 </article>
             </div>
@@ -33,7 +33,7 @@
                 </thead>
 
                 <tbody class="userTable">
-
+                
                     @foreach (ExerciseTracker exercise in Model)
                     {
                         <tr>
