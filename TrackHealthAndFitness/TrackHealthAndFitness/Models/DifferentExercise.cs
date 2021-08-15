@@ -1,14 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using TrackHealthAndFitness.Data;
 
 namespace TrackHealthAndFitness.Models
 {
-    [Keyless]
     public class DifferentExercise
     {
+        [Key]
         public string ExerciseName { get; set; }
         public MuscleGroups TypeOfExercise { get; set; }
 
@@ -35,8 +37,15 @@ namespace TrackHealthAndFitness.Models
 
         public async Task AddExercise(DifferentExercise exercise)
         {
-            _context.DifferentExercises.Add(exercise);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.DifferentExercises.Add(exercise);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+
+            }
         }
 
         /// <summary>

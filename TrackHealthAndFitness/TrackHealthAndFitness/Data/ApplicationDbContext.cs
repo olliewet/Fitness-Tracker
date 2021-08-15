@@ -55,7 +55,6 @@ namespace TrackHealthAndFitness.Data
             });
             builder.Entity<DifferentExercise>(entity =>
             {
-                entity.HasNoKey();
                 entity.ToTable(name: "DifferentExercise");
             });
         }

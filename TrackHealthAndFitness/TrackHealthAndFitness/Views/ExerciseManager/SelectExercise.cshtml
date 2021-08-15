@@ -1,7 +1,7 @@
 ﻿@inject UserManager<ApplicationUser> userManager
 @using Microsoft.AspNetCore.Identity
 
-@model List<ExerciseTracker>
+@model List<DifferentExercise>
 @{
     ViewData["Title"] = "Select Exercise";
 }
@@ -34,7 +34,7 @@
 
                 <tbody class="userTable">
                 
-                    @foreach (ExerciseTracker exercise in Model)
+                    @foreach (DifferentExercise exercise in Model)
                     {
                         <tr>
                             <td id="ExerciseType">@exercise.ExerciseName</td>

@@ -28,9 +28,14 @@ namespace TrackHealthAndFitness.Controllers
             return View();
         }
 
-        public IActionResult ManageExecerise(ExerciseTracker ExerciseModel)
+        public async Task<IActionResult> ManageExecerise(DifferentExercise ExerciseModel)
         {
-            return View(ExerciseModel);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, ExerciseModel.ExerciseName);
+            //Pass In The Different Exercise 
+            // Find the Personal Best for the passed in exercise 
+            //Return an extrecise Tracker
+            return View(exercise);
         }
         public IActionResult AddNewExecerise()
         {
@@ -41,14 +46,20 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, exerciseName);
+            bool personalbest = false;
+            //Very Basic to work out if personal best is true
+            if (int.Parse(Weight) > exercise.Weight)
+            {
+                personalbest = true;
+            }
             ExerciseTracker newExercise = new ExerciseTracker()
             {
                 Id = user.Id,
                 ExerciseName = exerciseName,
                 TypeOfExercise = muscle,         
-                Date = DateTime.Today,
-                //Add The Logic To Check if personal best is true
-                PersonalBest = true,
+                Date = DateTime.Today,           
+                PersonalBest = personalbest,
                 Reps = int.Parse(Reps),
                 Weight = int.Parse(Weight)
             };
@@ -71,48 +82,38 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<IActionResult> SelectExercise(string ExerciseType)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            List<ExerciseTracker> selectedExercises = new List<ExerciseTracker>();
+            List<DifferentExercise> selectedExercises = new List<DifferentExercise>();
             //Needs Improving
             switch (ExerciseType)
             {
                 case "Abs":
-                    //selectedExercises = differentExerciseDB.GetExercisesFromGroup(user.Id, DifferentExercise.MuscleGroups.Abs);
-                    selectedExercises = exerciseTrackerDB.GetExercisesFromGroup(user.Id, ExerciseTracker.MuscleGroups.Abs);
+                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Abs);                
                     break;
-
                 case "Back":
-                    //selectedExercises = differentExerciseDB.GetExercisesFromGroup(user.Id, DifferentExercise.MuscleGroups.Back);
-                    selectedExercises = exerciseTrackerDB.GetExercisesFromGroup(user.Id, ExerciseTracker.MuscleGroups.Back);
+                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Back);
                     break;
 
                 case "Biceps":
-                    //selectedExercises = differentExerciseDB.GetExercisesFromGroup(user.Id, DifferentExercise.MuscleGroups.Abs);
-                    selectedExercises = exerciseTrackerDB.GetExercisesFromGroup(user.Id, ExerciseTracker.MuscleGroups.Biceps);
+                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Biceps);
                     break;
 
                 case "Cardio":
-                    //selectedExercises = differentExerciseDB.GetExercisesFromGroup(user.Id, DifferentExercise.MuscleGroups.Abs);
-                    selectedExercises = exerciseTrackerDB.GetExercisesFromGroup(user.Id, ExerciseTracker.MuscleGroups.Cardio);
+                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Cardio);
                     break;
 
                 case "Chest":
-                    //selectedExercises = differentExerciseDB.GetExercisesFromGroup(user.Id, DifferentExercise.MuscleGroups.Abs);
-                    selectedExercises = exerciseTrackerDB.GetExercisesFromGroup(user.Id, ExerciseTracker.MuscleGroups.Chest);
+                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Chest);
                     break;
 
                 case "Legs":
-                    //selectedExercises = differentExerciseDB.GetExercisesFromGroup(user.Id, DifferentExercise.MuscleGroups.Abs);
-                    selectedExercises = exerciseTrackerDB.GetExercisesFromGroup(user.Id, ExerciseTracker.MuscleGroups.Legs);
+                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Legs);
                     break;
 
                 case "Shoulders":
-                    //selectedExercises = differentExerciseDB.GetExercisesFromGroup(user.Id, DifferentExercise.MuscleGroups.Abs);
-                    selectedExercises = exerciseTrackerDB.GetExercisesFromGroup(user.Id, ExerciseTracker.MuscleGroups.Shoulders);
+                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Shoulders);
                     break;
-
                 case "Triceps":
-                    //selectedExercises = differentExerciseDB.GetExercisesFromGroup(user.Id, DifferentExercise.MuscleGroups.Abs);
-                    selectedExercises = exerciseTrackerDB.GetExercisesFromGroup(user.Id, ExerciseTracker.MuscleGroups.Triceps);
+                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Triceps);
                     break;
             }
 
