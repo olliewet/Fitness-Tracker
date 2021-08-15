@@ -14,7 +14,7 @@ namespace TrackHealthAndFitness.Data
             : base(options)
         {
         }
-
+     
         public DbSet<ExerciseTracker> ExecriseTracker { get; set; }
         public DbSet<DifferentExercise> DifferentExercises { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -51,12 +51,14 @@ namespace TrackHealthAndFitness.Data
             });
             builder.Entity<ExerciseTracker>(entity =>
             {
-                entity.ToTable(name: "ExerciseTracker");
+                entity.ToTable(name: "ExerciseTracker").HasKey(b => b.InputID)
+        .HasName("PrimaryKey_InputID");
             });
             builder.Entity<DifferentExercise>(entity =>
             {
                 entity.ToTable(name: "DifferentExercise");
             });
+         
         }
     }
 

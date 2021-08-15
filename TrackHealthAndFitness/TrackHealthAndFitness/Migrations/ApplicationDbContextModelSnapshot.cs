@@ -219,23 +219,28 @@ namespace TrackHealthAndFitness.Migrations
             modelBuilder.Entity("TrackHealthAndFitness.Models.DifferentExercise", b =>
                 {
                     b.Property<string>("ExerciseName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("TypeOfExercise")
                         .HasColumnType("int");
+
+                    b.HasKey("ExerciseName");
 
                     b.ToTable("DifferentExercise");
                 });
 
             modelBuilder.Entity("TrackHealthAndFitness.Models.ExerciseTracker", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("InputID")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ExerciseName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PersonalBest")
@@ -250,7 +255,8 @@ namespace TrackHealthAndFitness.Migrations
                     b.Property<int>("Weight")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("InputID")
+                        .HasName("PrimaryKey_InputID");
 
                     b.ToTable("ExerciseTracker");
                 });

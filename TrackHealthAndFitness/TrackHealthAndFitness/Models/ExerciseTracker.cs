@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using TrackHealthAndFitness.Data;
@@ -8,6 +10,8 @@ namespace TrackHealthAndFitness.Models
 {
     public class ExerciseTracker
     {
+        [Key]
+        public string InputID { get; set; }
         public string Id { get; set; }
         public MuscleGroups TypeOfExercise { get; set; }
         public string ExerciseName { get; set; }
@@ -20,8 +24,8 @@ namespace TrackHealthAndFitness.Models
         {
             Abs,
             Back,
-            Biceps, 
-            Cardio, 
+            Biceps,
+            Cardio,
             Chest,
             Legs,
             Shoulders,
@@ -38,27 +42,31 @@ namespace TrackHealthAndFitness.Models
             _context = context;
         }
 
-
         /// <summary>
-        /// Add Exercise To Database 
+        /// Add Exercise To Database
         /// </summary>
         /// <param name="exercise"></param>
         public async Task AddExercise(ExerciseTracker exercise)
         {
-            _context.ExecriseTracker.Add(exercise);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.ExecriseTracker.Add(exercise);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+            }
         }
 
         /// <summary>
-        /// Remove Exercise From Database 
+        /// Remove Exercise From Database
         /// </summary>
         /// <param name="exercise"></param>
         public async void RemoveExercise(ExerciseTracker exercise)
-        {         
+        {
             _context.ExecriseTracker.Remove(exercise);
             await _context.SaveChangesAsync();
         }
-
 
         public async void DeleteTable()
         {
@@ -68,7 +76,7 @@ namespace TrackHealthAndFitness.Models
         }
 
         /// <summary>
-        /// Update Exercise 
+        /// Update Exercise
         /// </summary>
         /// <param name="exercise"></param>
         public async void UpdateExercise(ExerciseTracker exercise)
@@ -78,7 +86,7 @@ namespace TrackHealthAndFitness.Models
         }
 
         /// <summary>
-        /// Get Users Perosnal Best For Exercise 
+        /// Get Users Perosnal Best For Exercise
         /// </summary>
         /// <param name="userID"></param>
         /// <param name="exerciseName"></param>
@@ -87,6 +95,7 @@ namespace TrackHealthAndFitness.Models
         {
             ExerciseTracker exercise = new ExerciseTracker();
             exercise = _context.ExecriseTracker.FirstOrDefault(c => c.Id == userID && c.ExerciseName == exerciseName && c.PersonalBest == true);
+            _context.Entry<ExerciseTracker>(exercise).State = EntityState.Detached;
             return exercise;
         }
 
@@ -96,16 +105,33 @@ namespace TrackHealthAndFitness.Models
             var data = _context.ExecriseTracker.AsQueryable();
             data = data.Where(c => c.Id == userID && c.TypeOfExercise == muscleGroups && c.PersonalBest == true);
             foreach (var item in data)
-            {              
+            {
                 exercisesList.Add(item);
             }
             return exercisesList;
         }
 
-
-
-
-
-
+        public List<ExerciseTracker> GetExerciseHistory(string userID, string exerciseName)
+        {
+            /*
+            
+            var data = _context.ExecriseTracker.AsQueryable();
+            data = data.Where(c => c.Id == userID  && c.ExerciseName == exerciseName);
+            foreach (var item in data)
+            {
+                exercisesList.Add(item);
+            }
+            */
+            List<ExerciseTracker> exercisesList = new List<ExerciseTracker>();
+            var exercises = _context.ExecriseTracker; // define query
+            foreach (var e in exercises) // query executed and data obtained from database
+            {
+                if (e.ExerciseName == exerciseName && e.Id == userID)
+                {
+                    exercisesList.Add(e);
+                }
+            }
+            return exercisesList;
+        }
     }
 }

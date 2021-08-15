@@ -1,9 +1,17 @@
 ﻿@inject UserManager<ApplicationUser> userManager
 @using Microsoft.AspNetCore.Identity
-@model ExerciseTracker 
+@model List<ExerciseTracker>
 
 @{
     ViewData["Title"] = "Select Exercise";
+
+    //Sorting Through
+    Model.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+    ExerciseTracker exercisemodel = new ExerciseTracker();
+    if (Model != null)
+    {
+        exercisemodel = Model[0];
+    }
 }
 
 <body>
@@ -11,7 +19,6 @@
     <div class="tab">
         <button class="button" onclick="openTab(event, 'Track')" id="defaultOpen">Track</button>
         <button class="button" onclick="openTab(event, 'History')">History</button>
-  
     </div>
 
     <!-- Tab content -->
@@ -32,7 +39,7 @@
                             <label for="">Reps</label>
                             <input type="text" class="form-control" id="enterReps" value="" placeholder="Enter Reps">
                         </div>
-                    </form>                  
+                    </form>
                     <!-- Submit Button -->
                     <div>
                         <button class="button is-purple" onclick="SubmitExercise();">Submit</button>
@@ -49,7 +56,6 @@
                 <div class="column">
                     <article class="tile notification is-white white-box">
                         <div id="navButtons">
-
                         </div>
                     </article>
                 </div>
@@ -65,30 +71,42 @@
                     <thead>
                         <tr id="head" class="head">
                             <th scope="col">Muscle Group</th>
-                            <th scope="col">Select</th>
+                            <th scope="col">Exercise Name</th>
+                            <th scope="col">Reps</th>
+                            <th scope="col">Weight</th>
                         </tr>
                     </thead>
                     <tbody class="userTable">
-                        <tr>
-                            <td id="ExerciseType"></td>
-                            <td id="selection">
-                                <button onclick="location.href = ''" class="btn btn-success">Select Page</button>
-                            </td>
-                        </tr>
+ 
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            if (i == 0 || Model[i-1].Date == Model[i].Date)
+                            {
+                                <tr>
+                                    <td id="ExerciseType">@Model[i].TypeOfExercise</td>
+                                    <td id="ExerciseName">@Model[i].ExerciseName</td>
+                                    <td id="Reps">@Model[i].Reps</td>
+                                    <td id="Weight">@Model[i].Weight</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td id="ExerciseType">@Model[i].TypeOfExercise</td>
+                                    <td id="ExerciseName">@Model[i].ExerciseName</td>
+                                    <td id="Reps">@Model[i].Reps</td>
+                                    <td id="Weight">@Model[i].Weight</td>
+                                </tr>
+                            }
+                        }
                     </tbody>
                 </table>
             </article>
         </div>
     </div>
-
-
-
-    
 </body>
 <script>
     document.getElementById("defaultOpen").click();
-
-  
 
     function openTab(evt, tabName) {
         // Declare all variables
@@ -112,11 +130,10 @@
     }
 
     function SubmitExercise() {
-        var url = "exercisemanager/api/addexecerise";
         //Update to New Controller
         const progress = {
-            muscle: '@Model.TypeOfExercise',
-            exerciseName:'@Model.ExerciseName',
+            muscle: '@exercisemodel.TypeOfExercise',
+            exerciseName:'@exercisemodel.ExerciseName',
             Weight: document.getElementById('enterWeight').value,
             Reps: document.getElementById('enterReps').value
         };
@@ -124,6 +141,4 @@
                 RedirectToPage('@Html.Raw(Url.Action("SelectExercise", "ExerciseManager"))');
             });
     }
-
-
 </script>

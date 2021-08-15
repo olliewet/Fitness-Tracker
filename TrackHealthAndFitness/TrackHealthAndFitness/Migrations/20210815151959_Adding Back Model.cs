@@ -3,24 +3,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TrackHealthAndFitness.Migrations
 {
-    public partial class addedfitnesstrackertable : Migration
+    public partial class AddingBackModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Identity");
+
+
             migrationBuilder.CreateTable(
                 name: "ExerciseTracker",
                 schema: "Identity",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TypeOfExercise = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InputID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TypeOfExercise = table.Column<int>(type: "int", nullable: false),
                     ExerciseName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PersonalBest = table.Column<bool>(type: "bit", nullable: false),
+                    Weight = table.Column<int>(type: "int", nullable: false),
+                    Reps = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExerciseTracker", x => x.Id);
+                    table.PrimaryKey("PrimaryKey_InputID", x => x.InputID);
                 });
         }
 
@@ -29,6 +36,7 @@ namespace TrackHealthAndFitness.Migrations
             migrationBuilder.DropTable(
                 name: "ExerciseTracker",
                 schema: "Identity");
+      
         }
     }
 }

@@ -31,11 +31,11 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<IActionResult> ManageExecerise(DifferentExercise ExerciseModel)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, ExerciseModel.ExerciseName);
+            List<ExerciseTracker> exerciseHistory = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseModel.ExerciseName);
             //Pass In The Different Exercise 
             // Find the Personal Best for the passed in exercise 
             //Return an extrecise Tracker
-            return View(exercise);
+            return View(exerciseHistory);
         }
         public IActionResult AddNewExecerise()
         {
@@ -46,7 +46,7 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, exerciseName);
+            ExerciseTracker exercise =  exerciseTrackerDB.GetPersonalBestExercise(user.Id, exerciseName);
             bool personalbest = false;
             //Very Basic to work out if personal best is true
             if (int.Parse(Weight) > exercise.Weight)
