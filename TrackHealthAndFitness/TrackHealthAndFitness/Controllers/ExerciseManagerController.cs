@@ -31,12 +31,18 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<IActionResult> ManageExecerise(DifferentExercise ExerciseModel)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            List<ExerciseTracker> exerciseHistory = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseModel.ExerciseName);
-            //Pass In The Different Exercise 
-            // Find the Personal Best for the passed in exercise 
+            Exercise exercise = new Exercise();
+            exercise.ExerciseName = ExerciseModel.ExerciseName;
+            exercise.TypeOfExercise = ExerciseModel.TypeOfExercise;
+            exercise.exerciseTrackers = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseModel.ExerciseName);
+
+            return View(exercise);
+
+            //Pass In The Different Exercise
+            // Find the Personal Best for the passed in exercise
             //Return an extrecise Tracker
-            return View(exerciseHistory);
         }
+
         public IActionResult AddNewExecerise()
         {
             return View();
@@ -46,19 +52,22 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            ExerciseTracker exercise =  exerciseTrackerDB.GetPersonalBestExercise(user.Id, exerciseName);
+            ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, exerciseName);
             bool personalbest = false;
-            //Very Basic to work out if personal best is true
-            if (int.Parse(Weight) > exercise.Weight)
+            if (exercise != null)
             {
-                personalbest = true;
+                //Very Basic to work out if personal best is true
+                if (int.Parse(Weight) > exercise.Weight)
+                {
+                    personalbest = true;
+                }
             }
             ExerciseTracker newExercise = new ExerciseTracker()
             {
                 Id = user.Id,
                 ExerciseName = exerciseName,
-                TypeOfExercise = muscle,         
-                Date = DateTime.Today,           
+                TypeOfExercise = muscle,
+                Date = DateTime.Today.AddDays(1),
                 PersonalBest = personalbest,
                 Reps = int.Parse(Reps),
                 Weight = int.Parse(Weight)
@@ -77,8 +86,6 @@ namespace TrackHealthAndFitness.Controllers
             await differentExerciseDB.AddExercise(differentExercise);
         }
 
-
-
         public async Task<IActionResult> SelectExercise(string ExerciseType)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -87,8 +94,9 @@ namespace TrackHealthAndFitness.Controllers
             switch (ExerciseType)
             {
                 case "Abs":
-                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Abs);                
+                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Abs);
                     break;
+
                 case "Back":
                     selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Back);
                     break;
@@ -112,6 +120,7 @@ namespace TrackHealthAndFitness.Controllers
                 case "Shoulders":
                     selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Shoulders);
                     break;
+
                 case "Triceps":
                     selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Triceps);
                     break;

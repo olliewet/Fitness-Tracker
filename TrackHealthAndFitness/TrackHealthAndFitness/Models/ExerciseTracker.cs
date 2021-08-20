@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using TrackHealthAndFitness.Data;
@@ -11,6 +12,7 @@ namespace TrackHealthAndFitness.Models
     public class ExerciseTracker
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string InputID { get; set; }
         public string Id { get; set; }
         public MuscleGroups TypeOfExercise { get; set; }
@@ -94,8 +96,17 @@ namespace TrackHealthAndFitness.Models
         public ExerciseTracker GetPersonalBestExercise(string userID, string exerciseName)
         {
             ExerciseTracker exercise = new ExerciseTracker();
-            exercise = _context.ExecriseTracker.FirstOrDefault(c => c.Id == userID && c.ExerciseName == exerciseName && c.PersonalBest == true);
-            _context.Entry<ExerciseTracker>(exercise).State = EntityState.Detached;
+            try
+            {
+              
+                exercise = _context.ExecriseTracker.FirstOrDefault(c => c.Id == userID && c.ExerciseName == exerciseName && c.PersonalBest == true);
+                _context.Entry<ExerciseTracker>(exercise).State = EntityState.Detached;
+                return exercise;
+            }
+            catch(Exception E)
+            {
+
+            }
             return exercise;
         }
 

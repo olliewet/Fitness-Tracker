@@ -1,16 +1,17 @@
 ﻿@inject UserManager<ApplicationUser> userManager
 @using Microsoft.AspNetCore.Identity
-@model List<ExerciseTracker>
+@model Exercise
 
 @{
     ViewData["Title"] = "Select Exercise";
 
     //Sorting Through
-    Model.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
-    ExerciseTracker exercisemodel = new ExerciseTracker();
+
+    bool isEmpty = false;
     if (Model != null)
     {
-        exercisemodel = Model[0];
+        isEmpty = true;
+        Model.exerciseTrackers.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
     }
 }
 
@@ -78,25 +79,28 @@
                     </thead>
                     <tbody class="userTable">
  
-                        @for (int i = 0; i < Model.Count; i++)
+                        @if (isEmpty)
                         {
-                            if (i == 0 || Model[i-1].Date == Model[i].Date)
+                            for (int i = 0; i < Model.exerciseTrackers.Count; i++)
                             {
+                                if (i == 0 || Model.exerciseTrackers[i - 1].Date == Model.exerciseTrackers[i].Date)
+                                {
                                 <tr>
-                                    <td id="ExerciseType">@Model[i].TypeOfExercise</td>
-                                    <td id="ExerciseName">@Model[i].ExerciseName</td>
-                                    <td id="Reps">@Model[i].Reps</td>
-                                    <td id="Weight">@Model[i].Weight</td>
+                                    <td id="ExerciseType">@Model.exerciseTrackers[i].TypeOfExercise</td>
+                                    <td id="ExerciseName">@Model.exerciseTrackers[i].ExerciseName</td>
+                                    <td id="Reps">@Model.exerciseTrackers[i].Reps</td>
+                                    <td id="Weight">@Model.exerciseTrackers[i].Weight</td>
                                 </tr>
-                            }
-                            else
-                            {
+                                }
+                                else
+                                {
                                 <tr>
-                                    <td id="ExerciseType">@Model[i].TypeOfExercise</td>
-                                    <td id="ExerciseName">@Model[i].ExerciseName</td>
-                                    <td id="Reps">@Model[i].Reps</td>
-                                    <td id="Weight">@Model[i].Weight</td>
+                                    <td id="ExerciseType">@Model.exerciseTrackers[i].TypeOfExercise</td>
+                                    <td id="ExerciseName">@Model.exerciseTrackers[i].ExerciseName</td>
+                                    <td id="Reps">@Model.exerciseTrackers[i].Reps</td>
+                                    <td id="Weight">@Model.exerciseTrackers[i].Weight</td>
                                 </tr>
+                                }
                             }
                         }
                     </tbody>
@@ -132,8 +136,8 @@
     function SubmitExercise() {
         //Update to New Controller
         const progress = {
-            muscle: '@exercisemodel.TypeOfExercise',
-            exerciseName:'@exercisemodel.ExerciseName',
+            muscle: '@Model.TypeOfExercise',
+            exerciseName:'@Model.ExerciseName',
             Weight: document.getElementById('enterWeight').value,
             Reps: document.getElementById('enterReps').value
         };
