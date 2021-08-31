@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using TrackHealthAndFitness.Models;
 
@@ -28,19 +29,67 @@ namespace TrackHealthAndFitness.Controllers
             return View();
         }
 
-        public async Task<IActionResult> ManageExecerise(DifferentExercise ExerciseModel)
+        public async Task<IActionResult> ManageExecerise(string ExerciseName , DifferentExercise.MuscleGroups TypeOfExercise)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             Exercise exercise = new Exercise();
-            exercise.ExerciseName = ExerciseModel.ExerciseName;
-            exercise.TypeOfExercise = ExerciseModel.TypeOfExercise;
-            exercise.exerciseTrackers = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseModel.ExerciseName);
+            exercise.ExerciseName = ExerciseName;
+            exercise.TypeOfExercise = TypeOfExercise;    
+            exercise.exerciseTrackers = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName);
 
+            // await GetAverage(ExerciseName);
+            exercise.dayList = exercise.exerciseTrackers.FindAll(x => x.Date == DateTime.Today);
+            //Sorts the Dates of the Exercises Into Oldest to Knewest
+            //exercise.exerciseTrackers.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+            exercise.exerciseTrackers.Sort((x, y) => y.Date.CompareTo(x.Date));
             return View(exercise);
 
-            //Pass In The Different Exercise
-            // Find the Personal Best for the passed in exercise
-            //Return an extrecise Tracker
+        }
+
+        //
+        private string RemoveTime(string date)
+        {         
+            // Remove a substring from the middle of the string.
+            string toRemove = "00:00:00;";
+            string result = string.Empty;
+            int i = date.IndexOf(toRemove);
+            if (i >= 0)
+            {
+                result = date.Remove(i, toRemove.Length);
+            }
+            return result;
+        }
+
+        public async Task<IActionResult> HomeExercise(string ExerciseName, string date)
+            {
+      
+            DateTime datetime = DateTime.Parse(RemoveTime(date));    
+            Exercise exercise = new Exercise(); 
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            List<ExerciseTracker> trackers = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName);
+            exercise.dayList = exerciseTrackerDB.GetExercisesFromDay(user.Id, datetime);
+
+            return View(exercise);
+        }
+
+
+
+        public async Task<string> GetAverage(string ExerciseName)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            int counter = 0;
+            int weightAverage = 0;
+            int repAverage = 0; 
+            List<ExerciseTracker> listOfExercises = new List<ExerciseTracker>();
+            listOfExercises = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName);
+            foreach (ExerciseTracker item in listOfExercises)
+            {
+                counter++;
+                weightAverage = weightAverage + item.Weight;
+                repAverage = repAverage + item.Reps;
+            }
+           
+            return "Average weight of :" + weightAverage / counter + " with the average reps of :" + repAverage / counter ;
         }
 
         public IActionResult AddNewExecerise()
@@ -51,6 +100,11 @@ namespace TrackHealthAndFitness.Controllers
         [Authorize]
         public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps)
         {
+            DifferentExercise differentExercise = new DifferentExercise
+            {
+                ExerciseName = exerciseName,
+                TypeOfExercise = (DifferentExercise.MuscleGroups)muscle
+            };
             var user = await _userManager.GetUserAsync(HttpContext.User);
             ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, exerciseName);
             bool personalbest = false;
@@ -61,19 +115,26 @@ namespace TrackHealthAndFitness.Controllers
                 {
                     personalbest = true;
                 }
+
+                exercise.PersonalBest = false;
+                await exerciseTrackerDB.UpdateExercise(exercise);
+            }
+            else
+            {
+                personalbest = true;
             }
             ExerciseTracker newExercise = new ExerciseTracker()
             {
                 Id = user.Id,
                 ExerciseName = exerciseName,
                 TypeOfExercise = muscle,
-                Date = DateTime.Today.AddDays(1),
+                Date = DateTime.Today,
                 PersonalBest = personalbest,
                 Reps = int.Parse(Reps),
                 Weight = int.Parse(Weight)
             };
             await exerciseTrackerDB.AddExercise(newExercise);
-            return RedirectToAction("ManageExecerise", "ExerciseManager");
+            return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
         }
 
         public async Task AddTypeOfExercise(DifferentExercise.MuscleGroups exerciseType, string exerciseName)
@@ -85,6 +146,34 @@ namespace TrackHealthAndFitness.Controllers
             };
             await differentExerciseDB.AddExercise(differentExercise);
         }
+
+
+        public async Task<IActionResult> DeleteExercise(DateTime date,  string Id, string inputID, string ExerciseName, ExerciseTracker.MuscleGroups TypeOfExercise, int Reps, int Weight, bool PersonalBest)
+        {
+            DifferentExercise differentExercise = new DifferentExercise
+            {
+                ExerciseName = ExerciseName,
+                TypeOfExercise = (DifferentExercise.MuscleGroups)TypeOfExercise
+            };
+            ExerciseTracker exercise = new ExerciseTracker
+            {
+                Date = date,
+                ExerciseName = ExerciseName,
+                Id = Id,
+                InputID = inputID,
+                PersonalBest = PersonalBest,
+                Reps = Reps,
+                TypeOfExercise = TypeOfExercise,
+                Weight = Weight
+            };
+            await exerciseTrackerDB.RemoveExercise(exercise);
+   
+            return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
+           
+        }
+
+
+
 
         public async Task<IActionResult> SelectExercise(string ExerciseType)
         {

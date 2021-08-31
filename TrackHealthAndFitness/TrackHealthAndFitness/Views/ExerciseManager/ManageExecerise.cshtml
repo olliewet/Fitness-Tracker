@@ -5,13 +5,20 @@
 @{
     ViewData["Title"] = "Select Exercise";
 
+    int counter = 0;
+
+    DifferentExercise different = new DifferentExercise();
+    different.ExerciseName = Model.ExerciseName;
+    different.TypeOfExercise = Model.TypeOfExercise;
+
+    string date = DateTime.Today.ToString();
+   
     //Sorting Through
 
     bool isEmpty = false;
     if (Model != null)
     {
         isEmpty = true;
-        Model.exerciseTrackers.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
     }
 }
 
@@ -20,6 +27,7 @@
     <div class="tab">
         <button class="button" onclick="openTab(event, 'Track')" id="defaultOpen">Track</button>
         <button class="button" onclick="openTab(event, 'History')">History</button>
+        <a href="@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new { ExerciseName = Model.ExerciseName, date = DateTime.Today.ToString()}));"> Testing</a>
     </div>
 
     <!-- Tab content -->
@@ -48,6 +56,48 @@
                 </article>
             </div>
         </div>
+
+     
+            <table id="usersTable" style="" class="table">
+                <thead>
+                    <tr id="head" class="head">
+                        <th scope="col">Exercise Name</th>
+                        <th scope="col">Set</th>
+                        <th scope="col">Muscle Group</th>
+                        <th scope="col">Reps</th>
+                        <th scope="col">Weight</th>
+                        <th scope="col">Personal Best</th>
+                    </tr>
+                </thead>
+
+                @foreach (ExerciseTracker item in Model.dayList)
+                {
+                    if (item != null)
+                    {
+                        {
+                            counter = counter + 1;
+                        }
+                        <tr>
+                            <td id="ExerciseName">@item.ExerciseName</td>
+                            <td id="Set">@counter</td>
+                            <td id="Group">@item.TypeOfExercise</td>
+                            <td id="Reps">@item.Reps</td>
+                            <td id="Weight">@item.Weight</td>
+                            @if (item.PersonalBest == true)
+                            {
+                                <td id="Weight">true</td>
+                            }
+                            else
+                            {
+                                <td id="Weight">false</td>
+                            }
+                        </tr>
+                    }
+                }
+
+            </table>
+            <br />
+    
         <p></p>
     </div>
 
@@ -67,45 +117,44 @@
                 </div>
             </div>
             <div class="gap-10"></div>
-            <article class="tile notification is-white white-box users-box">
-                <table id="usersTable" class="table">
+            @foreach (var group in Model.exerciseTrackers.GroupBy(x => x.Date))
+            {         
+                <table id="usersTable" style="" class="table">
                     <thead>
                         <tr id="head" class="head">
-                            <th scope="col">Muscle Group</th>
                             <th scope="col">Exercise Name</th>
+                            <th scope="col">Muscle Group</th>
                             <th scope="col">Reps</th>
                             <th scope="col">Weight</th>
+                            <th scope="col">Personal Best</th>
+                            <th scope="col">Delete Exercise</th>
                         </tr>
                     </thead>
-                    <tbody class="userTable">
- 
-                        @if (isEmpty)
-                        {
-                            for (int i = 0; i < Model.exerciseTrackers.Count; i++)
+                    @foreach (ExerciseTracker item in group)
+                    {
+               
+                        <tr>
+                            <td id="ExerciseName">@item.ExerciseName</td>
+                            <td id="Group">@item.TypeOfExercise</td>
+                            <td id="Reps">@item.Reps</td>
+                            <td id="Weight">@item.Weight</td>
+                            @if (item.PersonalBest == true)
                             {
-                                if (i == 0 || Model.exerciseTrackers[i - 1].Date == Model.exerciseTrackers[i].Date)
-                                {
-                                <tr>
-                                    <td id="ExerciseType">@Model.exerciseTrackers[i].TypeOfExercise</td>
-                                    <td id="ExerciseName">@Model.exerciseTrackers[i].ExerciseName</td>
-                                    <td id="Reps">@Model.exerciseTrackers[i].Reps</td>
-                                    <td id="Weight">@Model.exerciseTrackers[i].Weight</td>
-                                </tr>
-                                }
-                                else
-                                {
-                                <tr>
-                                    <td id="ExerciseType">@Model.exerciseTrackers[i].TypeOfExercise</td>
-                                    <td id="ExerciseName">@Model.exerciseTrackers[i].ExerciseName</td>
-                                    <td id="Reps">@Model.exerciseTrackers[i].Reps</td>
-                                    <td id="Weight">@Model.exerciseTrackers[i].Weight</td>
-                                </tr>
-                                }
+                                <td id="Weight">true</td>
                             }
-                        }
-                    </tbody>
+                            else
+                            {
+                                <td id="Weight">false</td>
+                            }
+                            <td id="Delete"> <button class="button" onclick="location.href = '@Html.Raw(Url.Action("DeleteExercise", "ExerciseManager", new { date = item.Date, Id = item.Id, inputID = item.InputID, ExerciseName = item.ExerciseName, TypeOfExercise = item.TypeOfExercise, Reps = item.Reps, Weight = item.Weight, PersonalBest = item.PersonalBest, different = different }))'" id="defaultOpen">Delete</button></td>
+                        </tr>
+                  
+                    }
+
                 </table>
-            </article>
+                <br />
+                }
+            }
         </div>
     </div>
 </body>
@@ -141,8 +190,12 @@
             Weight: document.getElementById('enterWeight').value,
             Reps: document.getElementById('enterReps').value
         };
-        $.post( "/ExerciseManager/AddExecerise",progress,function(data) {
-                RedirectToPage('@Html.Raw(Url.Action("SelectExercise", "ExerciseManager"))');
+        $.post("/ExerciseManager/AddExecerise", progress, function (data) {
+                RedirectToPage('@Html.Raw(Url.Action("ManageExecerise", "ExerciseManager", new { ExerciseName = different.ExerciseName, TypeOfExercise = different.TypeOfExercise}))');
             });
+    }
+
+    function RedirectToPage(url) {
+        location.href = url;
     }
 </script>

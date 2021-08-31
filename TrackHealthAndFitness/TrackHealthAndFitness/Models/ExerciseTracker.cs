@@ -64,10 +64,17 @@ namespace TrackHealthAndFitness.Models
         /// Remove Exercise From Database
         /// </summary>
         /// <param name="exercise"></param>
-        public async void RemoveExercise(ExerciseTracker exercise)
+        public async Task RemoveExercise(ExerciseTracker exercise)
         {
-            _context.ExecriseTracker.Remove(exercise);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.ExecriseTracker.Remove(exercise);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+
+            }
         }
 
         public async void DeleteTable()
@@ -77,11 +84,12 @@ namespace TrackHealthAndFitness.Models
             await _context.SaveChangesAsync();
         }
 
+ 
         /// <summary>
         /// Update Exercise
         /// </summary>
         /// <param name="exercise"></param>
-        public async void UpdateExercise(ExerciseTracker exercise)
+        public async Task UpdateExercise(ExerciseTracker exercise)
         {
             _context.ExecriseTracker.Update(exercise);
             await _context.SaveChangesAsync();
@@ -105,7 +113,7 @@ namespace TrackHealthAndFitness.Models
             }
             catch(Exception E)
             {
-
+                
             }
             return exercise;
         }
@@ -138,6 +146,23 @@ namespace TrackHealthAndFitness.Models
             foreach (var e in exercises) // query executed and data obtained from database
             {
                 if (e.ExerciseName == exerciseName && e.Id == userID)
+                {
+                    exercisesList.Add(e);
+                }
+            }
+            return exercisesList;
+        }
+
+        public List<ExerciseTracker> GetExercisesFromDay(string userID, DateTime date)
+        {
+            List<ExerciseTracker> exercisesList = new List<ExerciseTracker>();
+
+            var exercises = _context.ExecriseTracker; // define query
+
+            //Looping through the whole database, not efficent 
+            foreach (var e in exercises) // query executed and data obtained from database
+            {
+                if (e.Date == date && e.Id == userID)
                 {
                     exercisesList.Add(e);
                 }

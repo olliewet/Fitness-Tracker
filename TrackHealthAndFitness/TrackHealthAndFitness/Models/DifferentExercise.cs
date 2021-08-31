@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,6 +11,7 @@ namespace TrackHealthAndFitness.Models
     {
         [Key]
         public string ExerciseName { get; set; }
+
         public MuscleGroups TypeOfExercise { get; set; }
 
         public enum MuscleGroups
@@ -29,7 +29,8 @@ namespace TrackHealthAndFitness.Models
 
     public class DifferentExerciseDBAccessLayer
     {
-        private readonly ApplicationDbContext _context = null; 
+        private readonly ApplicationDbContext _context = null;
+
         public DifferentExerciseDBAccessLayer(ApplicationDbContext context)
         {
             _context = context;
@@ -42,22 +43,26 @@ namespace TrackHealthAndFitness.Models
                 _context.DifferentExercises.Add(exercise);
                 await _context.SaveChangesAsync();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-
             }
         }
 
         /// <summary>
-        /// Remove Exercise From Database 
+        /// Remove Exercise From Database
         /// </summary>
         /// <param name="exercise"></param>
-        public async void RemoveExercise(DifferentExercise exercise)
+        public async Task RemoveExercise(DifferentExercise exercise)
         {
-            _context.DifferentExercises.Remove(exercise);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.DifferentExercises.Remove(exercise);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+            }
         }
-
 
         public async void DeleteTable()
         {
@@ -65,11 +70,13 @@ namespace TrackHealthAndFitness.Models
             _context.DifferentExercises.RemoveRange(itemsToDelete);
             await _context.SaveChangesAsync();
         }
+
         public async void UpdateExercise(DifferentExercise exercise)
         {
             _context.DifferentExercises.Update(exercise);
             await _context.SaveChangesAsync();
         }
+
         public List<DifferentExercise> GetExercisesFromGroup(DifferentExercise.MuscleGroups muscleGroups)
         {
             List<DifferentExercise> exercisesList = new List<DifferentExercise>();
@@ -81,6 +88,5 @@ namespace TrackHealthAndFitness.Models
             }
             return exercisesList;
         }
-
     }
 }

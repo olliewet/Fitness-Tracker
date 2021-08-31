@@ -13,6 +13,7 @@
                 <article class="tile notification is-white white-box">
                     <div id="navButtons">
                         <button onclick="location.href = '@Html.Raw(Url.Action("AddNewExecerise", "ExerciseManager"))'" class="btn btn-success">Add Exercise</button>
+
                     </div>
                 </article>
             </div>
@@ -35,11 +36,11 @@
                 <tbody class="userTable">
                 
                     @foreach (DifferentExercise exercise in Model)
-                    {
+                    {    
                         <tr>
                             <td id="ExerciseType">@exercise.ExerciseName</td>
                             <td id="selection">
-                                <button onclick="location.href = '@Html.Raw(Url.Action("ManageExecerise", "ExerciseManager", @exercise))'" class="btn btn-success">Select Page</button>
+                                <button onclick="location.href = '@Html.Raw(Url.Action("ManageExecerise", "ExerciseManager", new {ExerciseName = exercise.ExerciseName, TypeOfExercise = exercise.TypeOfExercise }))'" class="btn btn-success">Select Page</button>
                             </td>
                         </tr>
                     }

@@ -36,6 +36,7 @@ namespace TrackHealthAndFitness.Controllers
             return View();
         }
 
+
         public async Task<ExerciseTracker> AddDatabaseTest()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);

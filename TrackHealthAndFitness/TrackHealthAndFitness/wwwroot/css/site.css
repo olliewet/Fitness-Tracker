@@ -7,6 +7,21 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+
+#table1, #table2 {
+    float: left;
+    width: 700px;
+}
+
+td.first {
+    width: 40%;
+}
+
+td.second {
+    width: 60%;
+}
+
+
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;
