@@ -27,7 +27,7 @@
     <div class="tab">
         <button class="button" onclick="openTab(event, 'Track')" id="defaultOpen">Track</button>
         <button class="button" onclick="openTab(event, 'History')">History</button>
-        <a href="@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new { ExerciseName = Model.ExerciseName, date = DateTime.Today.ToString()}));"> Testing</a>
+        <a href="@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new {date = DateTime.Today.ToString()}))"> Testing</a>
     </div>
 
     <!-- Tab content -->

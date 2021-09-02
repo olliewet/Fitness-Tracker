@@ -7,13 +7,14 @@
     int counter = 0;
 
     string visibility = "visibility:hidden;";
-    if((!String.IsNullOrEmpty(Model.ExerciseName)))
+    if((String.IsNullOrEmpty(Model.ExerciseName)))
     {
         visibility = "visibility:visible;";
     }
 
     //Sorting Through
 
+    string websiteDate = Model.trackedDate.ToString();
     bool isEmpty = false;
     if (Model != null)
     {
@@ -24,45 +25,45 @@
 <body>
  
     <div class="tab">
-        <button style="@visibility" onclick="location.href = '@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new {forwardorback = "backward", ExerciseName = Model.ExerciseName}))'" class="btn btn-success">Forward</button>
-        <button style="@visibility" onclick="location.href = '@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new {forwardorback = "backward", ExerciseName = Model.ExerciseName}))'" class="btn btn-success">Backward</button>
+        <button style="" onclick="location.href = '@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new { ExerciseName = Model.ExerciseName, date = Model.trackedDate.AddDays(-1).ToString()}))'" class="btn btn-success">Backward</button>
+        <button style="" onclick="location.href = '@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new { ExerciseName = Model.ExerciseName, date = Model.trackedDate.AddDays(1).ToString()}))'" class="btn btn-success">Forward</button>
     </div>
 
-    <table id="usersTable" style="" class="table">
-        <thead>
-            <tr id="head" class="head">
-                <th scope="col">Exercise Name</th>
-                <th scope="col">Set</th>
-                <th scope="col">Muscle Group</th>
-                <th scope="col">Reps</th>
-                <th scope="col">Weight</th>
-                <th scope="col">Personal Best</th>
-            </tr>
-        </thead>
-
-        @foreach (ExerciseTracker item in Model.dayList)
+        @foreach (var group in Model.dayList.GroupBy(x => x.ExerciseName))
         {
-            if (item != null)
-            {
+            <table id="usersTable" style="" class="table">
+                <thead>
+                    <tr id="head" class="head">
+                        <th scope="col">Exercise Name</th>
+                        <th scope="col">Muscle Group</th>
+                        <th scope="col">Reps</th>
+                        <th scope="col">Weight</th>
+                        <th scope="col">Personal Best</th>
+                        <th scope="col">Date</th>
+                    </tr>
+                </thead>
+                @foreach (ExerciseTracker item in group)
                 {
-                    counter = counter + 1;
+
+            <tr>
+                <td style="width:200px;" id="ExerciseName">@item.ExerciseName</td>
+                <td id="Group">@item.TypeOfExercise</td>
+                <td id="Reps">@item.Reps</td>
+                <td id="Weight">@item.Weight</td>
+                @if (item.PersonalBest == true)
+                {
+                    <td id="Weight">true</td>
                 }
-                <tr>
-                    <td id="ExerciseName">@item.ExerciseName</td>
-                    <td id="Set">@counter</td>
-                    <td id="Group">@item.TypeOfExercise</td>
-                    <td id="Reps">@item.Reps</td>
-                    <td id="Weight">@item.Weight</td>
-                    @if (item.PersonalBest == true)
-                    {
-                        <td id="Weight">true</td>
-                    }
-                    else
-                    {
-                        <td id="Weight">false</td>
-                    }
-                </tr>
-            }
+                else
+                {
+                    <td id="Weight">false</td>
+                }
+                <td id="Date">@item.Date</td>
+            </tr>
+
+                }
+
+            </table>         
         }
-    </table>
+     
 </body>

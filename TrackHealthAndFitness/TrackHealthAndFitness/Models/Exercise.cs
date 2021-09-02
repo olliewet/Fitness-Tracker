@@ -12,6 +12,7 @@ namespace TrackHealthAndFitness.Models
         public List<ExerciseTracker> exerciseTrackers { get; set; }
         //Used to store a list of exercises from one day
         public List<ExerciseTracker> dayList { get; set; }
+        public DateTime trackedDate { get; set; }
         public MuscleGroups TypeOfExercise { get; set; }
     }
 }

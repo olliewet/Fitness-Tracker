@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading.Tasks;
 using TrackHealthAndFitness.Models;
 
@@ -29,12 +28,12 @@ namespace TrackHealthAndFitness.Controllers
             return View();
         }
 
-        public async Task<IActionResult> ManageExecerise(string ExerciseName , DifferentExercise.MuscleGroups TypeOfExercise)
+        public async Task<IActionResult> ManageExecerise(string ExerciseName, DifferentExercise.MuscleGroups TypeOfExercise)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             Exercise exercise = new Exercise();
             exercise.ExerciseName = ExerciseName;
-            exercise.TypeOfExercise = TypeOfExercise;    
+            exercise.TypeOfExercise = TypeOfExercise;
             exercise.exerciseTrackers = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName);
 
             // await GetAverage(ExerciseName);
@@ -43,14 +42,13 @@ namespace TrackHealthAndFitness.Controllers
             //exercise.exerciseTrackers.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             exercise.exerciseTrackers.Sort((x, y) => y.Date.CompareTo(x.Date));
             return View(exercise);
-
         }
 
         //
         private string RemoveTime(string date)
-        {         
+        {
             // Remove a substring from the middle of the string.
-            string toRemove = "00:00:00;";
+            string toRemove = "00:00:00";
             string result = string.Empty;
             int i = date.IndexOf(toRemove);
             if (i >= 0)
@@ -60,26 +58,28 @@ namespace TrackHealthAndFitness.Controllers
             return result;
         }
 
-        public async Task<IActionResult> HomeExercise(string ExerciseName, string date)
+        public async Task<IActionResult> HomeExercise(string date)
+        {
+            if (String.IsNullOrEmpty(date))
             {
-      
-            DateTime datetime = DateTime.Parse(RemoveTime(date));    
-            Exercise exercise = new Exercise(); 
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            List<ExerciseTracker> trackers = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName);
-            exercise.dayList = exerciseTrackerDB.GetExercisesFromDay(user.Id, datetime);
+                date = DateTime.Today.ToString();
+            }
 
+            string newDate = RemoveTime(date);
+            DateTime datetime = DateTime.Parse(newDate);
+            Exercise exercise = new Exercise();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            exercise.dayList = exerciseTrackerDB.GetExercisesFromDay(user.Id, datetime);
+            exercise.trackedDate = datetime;
             return View(exercise);
         }
-
-
 
         public async Task<string> GetAverage(string ExerciseName)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             int counter = 0;
             int weightAverage = 0;
-            int repAverage = 0; 
+            int repAverage = 0;
             List<ExerciseTracker> listOfExercises = new List<ExerciseTracker>();
             listOfExercises = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName);
             foreach (ExerciseTracker item in listOfExercises)
@@ -88,8 +88,8 @@ namespace TrackHealthAndFitness.Controllers
                 weightAverage = weightAverage + item.Weight;
                 repAverage = repAverage + item.Reps;
             }
-           
-            return "Average weight of :" + weightAverage / counter + " with the average reps of :" + repAverage / counter ;
+
+            return "Average weight of :" + weightAverage / counter + " with the average reps of :" + repAverage / counter;
         }
 
         public IActionResult AddNewExecerise()
@@ -147,8 +147,7 @@ namespace TrackHealthAndFitness.Controllers
             await differentExerciseDB.AddExercise(differentExercise);
         }
 
-
-        public async Task<IActionResult> DeleteExercise(DateTime date,  string Id, string inputID, string ExerciseName, ExerciseTracker.MuscleGroups TypeOfExercise, int Reps, int Weight, bool PersonalBest)
+        public async Task<IActionResult> DeleteExercise(DateTime date, string Id, string inputID, string ExerciseName, ExerciseTracker.MuscleGroups TypeOfExercise, int Reps, int Weight, bool PersonalBest)
         {
             DifferentExercise differentExercise = new DifferentExercise
             {
@@ -167,13 +166,9 @@ namespace TrackHealthAndFitness.Controllers
                 Weight = Weight
             };
             await exerciseTrackerDB.RemoveExercise(exercise);
-   
+
             return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
-           
         }
-
-
-
 
         public async Task<IActionResult> SelectExercise(string ExerciseType)
         {

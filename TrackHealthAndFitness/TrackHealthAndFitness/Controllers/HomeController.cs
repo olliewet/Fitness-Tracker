@@ -27,7 +27,7 @@ namespace TrackHealthAndFitness.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("HomeExercise", "ExerciseManager");
         }
         [Authorize]
         public async Task<IActionResult> FitnessTrackerAsync()
