@@ -25,9 +25,17 @@ namespace TrackHealthAndFitness.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return RedirectToAction("HomeExercise", "ExerciseManager");
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user != null)
+            {
+                return RedirectToAction("HomeExercise", "ExerciseManager");
+            }
+            else
+            {
+                return View();
+            }
         }
         [Authorize]
         public async Task<IActionResult> FitnessTrackerAsync()
