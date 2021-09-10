@@ -100,29 +100,27 @@ namespace TrackHealthAndFitness.Controllers
         [Authorize]
         public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            ExerciseValidation exerciseValidation = new ExerciseValidation();
             DifferentExercise differentExercise = new DifferentExercise
             {
                 ExerciseName = exerciseName,
                 TypeOfExercise = (DifferentExercise.MuscleGroups)muscle
             };
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+
             ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, exerciseName);
             bool personalbest = false;
+           
             if (exercise != null)
-            {
-                //Very Basic to work out if personal best is true
-                if (int.Parse(Weight) > exercise.Weight)
-                {
-                    personalbest = true;
-                }
-
-                exercise.PersonalBest = false;
+            {     
+                exercise.PersonalBest = exerciseValidation.isPersonalBest(int.Parse(Weight), exercise.Weight);
                 await exerciseTrackerDB.UpdateExercise(exercise);
             }
             else
             {
                 personalbest = true;
             }
+
             ExerciseTracker newExercise = new ExerciseTracker()
             {
                 Id = user.Id,
