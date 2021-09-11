@@ -201,3 +201,4 @@ C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFit
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\ManageExecerise.cshtml.g.cs
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\AddNewExecerise.cshtml.g.cs
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\HomeExercise.cshtml.g.cs
+C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\PersonalBest.cshtml.g.cs

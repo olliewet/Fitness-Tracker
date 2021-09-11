@@ -44,6 +44,13 @@ namespace TrackHealthAndFitness.Controllers
             return View(exercise);
         }
 
+        public async Task<IActionResult> PersonalBest()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            List<ExerciseTracker> personalBestTracker = new List<ExerciseTracker>();
+            personalBestTracker = exerciseTrackerDB.GetExercisePersonalBestHistory(user.Id);
+            return View(personalBestTracker);
+        }
         //
         private string RemoveTime(string date)
         {
@@ -97,6 +104,7 @@ namespace TrackHealthAndFitness.Controllers
             return View();
         }
 
+        //Adding the set of the exercise 
         [Authorize]
         public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps)
         {
@@ -135,6 +143,7 @@ namespace TrackHealthAndFitness.Controllers
             return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
         }
 
+        //adding the type of exercise 
         public async Task AddTypeOfExercise(DifferentExercise.MuscleGroups exerciseType, string exerciseName)
         {
             DifferentExercise differentExercise = new DifferentExercise()
@@ -144,6 +153,8 @@ namespace TrackHealthAndFitness.Controllers
             };
             await differentExerciseDB.AddExercise(differentExercise);
         }
+
+
 
         public async Task<IActionResult> DeleteExercise(DateTime date, string Id, string inputID, string ExerciseName, ExerciseTracker.MuscleGroups TypeOfExercise, int Reps, int Weight, bool PersonalBest)
         {

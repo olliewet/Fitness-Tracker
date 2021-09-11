@@ -40,13 +40,31 @@ namespace TrackHealthAndFitness.Models
         {
             try
             {
-                _context.DifferentExercises.Add(exercise);
-                await _context.SaveChangesAsync();
+                bool newExercise = true;
+                var data = _context.DifferentExercises.AsQueryable();
+                data = data.Where(c => c.TypeOfExercise == exercise.TypeOfExercise);
+                foreach (DifferentExercise item in data)
+                {
+                    if(item.ExerciseName == exercise.ExerciseName)
+                    {
+                        newExercise = false;
+                        break;
+                    }
+                }
+      
+                if (newExercise == true)
+                {
+                    _context.DifferentExercises.Add(exercise);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception e)
             {
+
             }
         }
+
+
 
         /// <summary>
         /// Remove Exercise From Database

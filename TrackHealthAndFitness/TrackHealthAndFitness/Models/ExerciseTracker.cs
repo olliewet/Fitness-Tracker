@@ -132,15 +132,6 @@ namespace TrackHealthAndFitness.Models
 
         public List<ExerciseTracker> GetExerciseHistory(string userID, string exerciseName)
         {
-            /*
-            
-            var data = _context.ExecriseTracker.AsQueryable();
-            data = data.Where(c => c.Id == userID  && c.ExerciseName == exerciseName);
-            foreach (var item in data)
-            {
-                exercisesList.Add(item);
-            }
-            */
             List<ExerciseTracker> exercisesList = new List<ExerciseTracker>();
             var exercises = _context.ExecriseTracker; // define query
             foreach (var e in exercises) // query executed and data obtained from database
@@ -152,6 +143,22 @@ namespace TrackHealthAndFitness.Models
             }
             return exercisesList;
         }
+
+        public List<ExerciseTracker> GetExercisePersonalBestHistory(string userID)
+        {
+            List<ExerciseTracker> exercisesList = new List<ExerciseTracker>();
+            var exercises = _context.ExecriseTracker; // define query
+            //Way too inefficent because it loads all exercises 
+            foreach (var e in exercises) // query executed and data obtained from database
+            {
+                if (e.PersonalBest == true && e.Id == userID)
+                {
+                    exercisesList.Add(e);
+                }
+            }
+            return exercisesList;
+        }
+
 
         public List<ExerciseTracker> GetExercisesFromDay(string userID, DateTime date)
         {

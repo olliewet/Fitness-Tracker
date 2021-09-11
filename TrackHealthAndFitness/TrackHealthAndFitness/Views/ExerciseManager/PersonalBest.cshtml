@@ -1,0 +1,45 @@
+﻿@inject UserManager<ApplicationUser> userManager
+@using Microsoft.AspNetCore.Identity
+@model List<ExerciseTracker>
+
+@{
+}
+
+
+<div>
+    <table id="usersTable" style="" class="table">
+        <thead>
+            <tr id="head" class="head">
+                <th scope="col">Exercise Name</th>
+                <th scope="col">Muscle Group</th>
+                <th scope="col">Reps</th>
+                <th scope="col">Weight</th>
+                <th scope="col">Personal Best</th>
+            </tr>
+        </thead>
+
+        @foreach (ExerciseTracker item in Model)
+        {
+            if (item != null)
+            {
+                <tr>
+                    <td id="ExerciseName">@item.ExerciseName</td>
+                    <td id="Group">@item.TypeOfExercise</td>
+                    <td id="Reps">@item.Reps</td>
+                    <td id="Weight">@item.Weight</td>
+                    @if (item.PersonalBest == true)
+                    {
+                        <td id="Weight">true</td>
+                    }
+                    else
+                    {
+                        <td id="Weight">false</td>
+                    }
+                </tr>
+            }
+        }
+
+    </table>
+
+
+</div>
