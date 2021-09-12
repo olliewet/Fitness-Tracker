@@ -44,11 +44,11 @@ namespace TrackHealthAndFitness.Controllers
             return View(exercise);
         }
 
-        public async Task<IActionResult> PersonalBest()
+        public async Task<IActionResult> PersonalBest(ExerciseTracker.MuscleGroups TypeOfExercise)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             List<ExerciseTracker> personalBestTracker = new List<ExerciseTracker>();
-            personalBestTracker = exerciseTrackerDB.GetExercisePersonalBestHistory(user.Id);
+            personalBestTracker = exerciseTrackerDB.GetExercisePersonalBestHistory(user.Id, TypeOfExercise);
             return View(personalBestTracker);
         }
         //
@@ -182,44 +182,52 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<IActionResult> SelectExercise(string ExerciseType)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            List<DifferentExercise> selectedExercises = new List<DifferentExercise>();
+            ExerciseDetail selectedExerciseType = new ExerciseDetail();
             //Needs Improving
             switch (ExerciseType)
             {
                 case "Abs":
-                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Abs);
+                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Abs);
+                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Abs;
                     break;
 
                 case "Back":
-                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Back);
+                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Back);
+                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Back;
                     break;
 
                 case "Biceps":
-                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Biceps);
+                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Biceps);
+                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Biceps;
                     break;
 
                 case "Cardio":
-                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Cardio);
+                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Cardio);
+                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Cardio;
                     break;
 
                 case "Chest":
-                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Chest);
+                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Chest);
+                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Chest;
                     break;
 
                 case "Legs":
-                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Legs);
+                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Legs);
+                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Legs;
                     break;
 
                 case "Shoulders":
-                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Shoulders);
+                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Shoulders);
+                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Shoulders;
                     break;
 
                 case "Triceps":
-                    selectedExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Triceps);
+                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Triceps);
+                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Triceps;
                     break;
             }
 
-            return View(selectedExercises);
+            return View(selectedExerciseType);
         }
     }
 }

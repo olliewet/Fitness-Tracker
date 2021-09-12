@@ -144,14 +144,14 @@ namespace TrackHealthAndFitness.Models
             return exercisesList;
         }
 
-        public List<ExerciseTracker> GetExercisePersonalBestHistory(string userID)
+        public List<ExerciseTracker> GetExercisePersonalBestHistory(string userID, ExerciseTracker.MuscleGroups muscleGroups)
         {
             List<ExerciseTracker> exercisesList = new List<ExerciseTracker>();
             var exercises = _context.ExecriseTracker; // define query
             //Way too inefficent because it loads all exercises 
             foreach (var e in exercises) // query executed and data obtained from database
             {
-                if (e.PersonalBest == true && e.Id == userID)
+                if (e.PersonalBest == true && e.Id == userID && e.TypeOfExercise == muscleGroups)
                 {
                     exercisesList.Add(e);
                 }

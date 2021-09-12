@@ -1,19 +1,20 @@
 ﻿@inject UserManager<ApplicationUser> userManager
 @using Microsoft.AspNetCore.Identity
 
-@model List<DifferentExercise>
+@model ExerciseDetail
 @{
     ViewData["Title"] = "Select Exercise";
 }
 
 <body>
     <div id="main">
+      
         <div class="columns">
             <div class="column">
                 <article class="tile notification is-white white-box">
                     <div id="navButtons">
                         <button onclick="location.href = '@Html.Raw(Url.Action("AddNewExecerise", "ExerciseManager"))'" class="btn btn-success">Add Exercise</button>
-
+                        <button onclick="location.href = '@Html.Raw(Url.Action("PersonalBest", "ExerciseManager", new {TypeOfExercise = Model.TypeOfExercise}))'" class="btn btn-success">Personal Best</button>
                     </div>
                 </article>
             </div>
@@ -34,9 +35,9 @@
                 </thead>
 
                 <tbody class="userTable">
-                
-                    @foreach (DifferentExercise exercise in Model)
-                    {    
+
+                    @foreach (DifferentExercise exercise in Model.differentExercises)
+                    {
                         <tr>
                             <td id="ExerciseType">@exercise.ExerciseName</td>
                             <td id="selection">
