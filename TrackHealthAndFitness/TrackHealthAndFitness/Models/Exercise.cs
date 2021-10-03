@@ -15,5 +15,6 @@ namespace TrackHealthAndFitness.Models
         public List<ExerciseTracker> dayList { get; set; }
         public DateTime trackedDate { get; set; }
         public MuscleGroups TypeOfExercise { get; set; }
+        public double OneRepMax { get; set; }
     }
 }

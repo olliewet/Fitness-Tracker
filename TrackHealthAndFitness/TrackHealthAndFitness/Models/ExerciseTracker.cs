@@ -106,10 +106,22 @@ namespace TrackHealthAndFitness.Models
             ExerciseTracker exercise = new ExerciseTracker();
             try
             {
-              
-                exercise = _context.ExecriseTracker.FirstOrDefault(c => c.Id == userID && c.ExerciseName == exerciseName && c.PersonalBest == true);
-                _context.Entry<ExerciseTracker>(exercise).State = EntityState.Detached;
+                List<ExerciseTracker> exercisesList = new List<ExerciseTracker>();
+                var exercises = _context.ExecriseTracker; // define query
+                                                          //Way too inefficent because it loads all exercises 
+                foreach (var e in exercises) // query executed and data obtained from database
+                {
+                    if (e.PersonalBest == true && e.Id == userID && e.ExerciseName == exerciseName && e.PersonalBest == true)
+                    {
+                        exercise = e;
+                    }
+                }
                 return exercise;
+                /*
+                  exercise = _context.ExecriseTracker.FirstOrDefault(c => c.Id == userID && c.ExerciseName == exerciseName && c.PersonalBest == true);
+              _context.Entry<ExerciseTracker>(exercise).State = EntityState.Detached;
+                  return exercise;
+                */
             }
             catch(Exception E)
             {

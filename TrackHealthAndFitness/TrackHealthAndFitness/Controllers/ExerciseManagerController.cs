@@ -32,6 +32,7 @@ namespace TrackHealthAndFitness.Controllers
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             Exercise exercise = new Exercise();
+            ExerciseTracker personalBest = exerciseTrackerDB.GetPersonalBestExercise(user.Id, ExerciseName);
             exercise.ExerciseName = ExerciseName;
             exercise.TypeOfExercise = TypeOfExercise;
             exercise.exerciseTrackers = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName);
@@ -41,6 +42,7 @@ namespace TrackHealthAndFitness.Controllers
             //Sorts the Dates of the Exercises Into Oldest to Knewest
             //exercise.exerciseTrackers.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             exercise.exerciseTrackers.Sort((x, y) => y.Date.CompareTo(x.Date));
+            exercise.OneRepMax = ExerciseValidation.OneRepMax(personalBest.Weight, personalBest.Reps);
             return View(exercise);
         }
 
@@ -51,7 +53,7 @@ namespace TrackHealthAndFitness.Controllers
             personalBestTracker = exerciseTrackerDB.GetExercisePersonalBestHistory(user.Id, TypeOfExercise);
             return View(personalBestTracker);
         }
-        //
+
         private string RemoveTime(string date)
         {
             // Remove a substring from the middle of the string.
@@ -72,15 +74,27 @@ namespace TrackHealthAndFitness.Controllers
                 date = DateTime.Today.ToString();
             }
 
+            ExerciseValidation exerciseValidation = new ExerciseValidation();
+            ExerciseTracker personalBestExercise = new ExerciseTracker();
             string newDate = RemoveTime(date);
             DateTime datetime = DateTime.Parse(newDate);
             Exercise exercise = new Exercise();
             var user = await _userManager.GetUserAsync(HttpContext.User);
             exercise.dayList = exerciseTrackerDB.GetExercisesFromDay(user.Id, datetime);
+
+            //Works But Needs Changing 
+            personalBestExercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, "Leg Press");
+           
+            if (exercise.dayList != null)
+            {
+                exercise.OneRepMax = ExerciseValidation.OneRepMax(personalBestExercise.Weight, personalBestExercise.Reps);
+            }
             exercise.trackedDate = datetime;
+      
             return View(exercise);
         }
 
+        //Used to get the average of a set
         public async Task<string> GetAverage(string ExerciseName)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -109,7 +123,6 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            ExerciseValidation exerciseValidation = new ExerciseValidation();
             DifferentExercise differentExercise = new DifferentExercise
             {
                 ExerciseName = exerciseName,
@@ -120,8 +133,11 @@ namespace TrackHealthAndFitness.Controllers
             bool personalbest = false;
            
             if (exercise != null)
-            {     
-                exercise.PersonalBest = exerciseValidation.isPersonalBest(int.Parse(Weight), exercise.Weight);
+            {
+                bool tempBest = false;
+                tempBest = ExerciseValidation.isPersonalBest(int.Parse(Weight), exercise.Weight);
+                exercise.PersonalBest = !tempBest;
+                personalbest = tempBest;
                 await exerciseTrackerDB.UpdateExercise(exercise);
             }
             else
