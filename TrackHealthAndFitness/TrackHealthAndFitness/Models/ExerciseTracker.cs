@@ -117,11 +117,6 @@ namespace TrackHealthAndFitness.Models
                     }
                 }
                 return exercise;
-                /*
-                  exercise = _context.ExecriseTracker.FirstOrDefault(c => c.Id == userID && c.ExerciseName == exerciseName && c.PersonalBest == true);
-              _context.Entry<ExerciseTracker>(exercise).State = EntityState.Detached;
-                  return exercise;
-                */
             }
             catch(Exception E)
             {

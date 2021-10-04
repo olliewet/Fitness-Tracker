@@ -11,16 +11,18 @@ namespace TrackHealthAndFitness.Controllers
     public class ExerciseManagerController : Controller
     {
         private readonly ExerciseTrackerDBAccessLayer exerciseTrackerDB = null;
+        private readonly FavExerciseDBLayer favExerciseDB = null;
         private readonly DifferentExerciseDBAccessLayer differentExerciseDB = null;
         private readonly SignInManager<ApplicationUser> _signManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ExerciseManagerController(ExerciseTrackerDBAccessLayer eDb, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DifferentExerciseDBAccessLayer deDB)
+        public ExerciseManagerController(ExerciseTrackerDBAccessLayer eDb, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DifferentExerciseDBAccessLayer deDB, FavExerciseDBLayer favExercise)
         {
             exerciseTrackerDB = eDb;
             _signManager = signInManager;
             _userManager = userManager;
             differentExerciseDB = deDB;
+            favExerciseDB = favExercise;
         }
 
         public IActionResult Index()

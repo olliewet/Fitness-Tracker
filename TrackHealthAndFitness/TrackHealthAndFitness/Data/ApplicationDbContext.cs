@@ -17,6 +17,7 @@ namespace TrackHealthAndFitness.Data
      
         public DbSet<ExerciseTracker> ExecriseTracker { get; set; }
         public DbSet<DifferentExercise> DifferentExercises { get; set; }
+        public DbSet<FavExercise> FavExercises { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -58,7 +59,12 @@ namespace TrackHealthAndFitness.Data
             {
                 entity.ToTable(name: "DifferentExercise");
             });
-         
+            builder.Entity<FavExercise>(entity =>
+            {
+                entity.ToTable(name: "FavExercise");
+          
+            });
+
         }
     }
 

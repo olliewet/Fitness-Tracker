@@ -35,6 +35,7 @@ namespace TrackHealthAndFitness
                     .AddDefaultTokenProviders();
             services.AddScoped<ExerciseTrackerDBAccessLayer, ExerciseTrackerDBAccessLayer>();
             services.AddScoped<DifferentExerciseDBAccessLayer, DifferentExerciseDBAccessLayer>();
+            services.AddScoped<FavExerciseDBLayer, FavExerciseDBLayer>();
             services.AddControllersWithViews();
         }
 
