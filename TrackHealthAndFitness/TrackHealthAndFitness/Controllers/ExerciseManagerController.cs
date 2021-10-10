@@ -71,6 +71,8 @@ namespace TrackHealthAndFitness.Controllers
 
         public async Task<IActionResult> HomeExercise(string date)
         {
+            //await addFavTestData();
+            await getFavExercises();
             if (String.IsNullOrEmpty(date))
             {
                 date = DateTime.Today.ToString();
@@ -197,6 +199,26 @@ namespace TrackHealthAndFitness.Controllers
             return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
         }
 
+        public async Task<IActionResult> addFavTestData()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            FavExercise fav = new FavExercise
+            {
+                Date = DateTime.Today,
+                ExerciseName = "Squat",
+                TypeOfExercise = DifferentExercise.MuscleGroups.Legs,
+                UserID = user.Id
+            };
+            await favExerciseDB.AddFavExercise(fav);
+            return null;
+        }
+
+        public async Task<List<FavExercise>> getFavExercises()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            List<FavExercise> fav = favExerciseDB.GetFavExercises(user.Id, DateTime.Today);
+            return fav;
+        }
         public async Task<IActionResult> SelectExercise(string ExerciseType)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);

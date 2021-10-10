@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using TrackHealthAndFitness.Data;
+using static TrackHealthAndFitness.Models.DifferentExercise;
 
 namespace TrackHealthAndFitness.Models
 {
@@ -15,11 +16,16 @@ namespace TrackHealthAndFitness.Models
         public int Id { get; set; }
         public string UserID { get; set; }
         public DateTime Date { get; set; }
-        public ExerciseTracker exercise {get;set;}
+        public MuscleGroups TypeOfExercise { get; set; }
+        public string ExerciseName { get; set; }
     }
     public class FavExerciseDBLayer
     {
         private readonly ApplicationDbContext _context = null;
+        public FavExerciseDBLayer(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task AddFavExercise(FavExercise exercise)
         {
@@ -59,16 +65,16 @@ namespace TrackHealthAndFitness.Models
             await _context.SaveChangesAsync();
         }
 
-        public List<FavExercise> GetExercises(string userID, DateTime dateTime)
+        public List<FavExercise> GetFavExercises(string userID, DateTime dateTime)
         {
-            List<FavExercise> exercisesList = new List<FavExercise>();
+            List<FavExercise> favExercisesList = new List<FavExercise>();
             var data = _context.FavExercises.AsQueryable();
             data = data.Where(c => c.UserID == userID && c.Date == dateTime );
             foreach (var item in data)
             {
-                exercisesList.Add(item);
+                favExercisesList.Add(item);
             }
-            return exercisesList;
+            return favExercisesList;
         }
     }
     
