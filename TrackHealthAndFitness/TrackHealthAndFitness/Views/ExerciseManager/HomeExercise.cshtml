@@ -29,6 +29,8 @@
     <div class="tab">
         <button style="" onclick="location.href = '@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new { ExerciseName = Model.ExerciseName, date = Model.trackedDate.AddDays(-1).ToString()}))'" class="btn btn-success">Backward</button>
         <button style="" onclick="location.href = '@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new { ExerciseName = Model.ExerciseName, date = Model.trackedDate.AddDays(1).ToString()}))'" class="btn btn-success">Forward</button>
+        <button style="" onclick="location.href = '@Html.Raw(Url.Action("ExerciseRoutine", "ExerciseManager", new { Date = DateTime.Today.ToString()}))'" class="btn btn-success">Forward</button>
+
         <label>@OneRepMax</label>
     </div>
 

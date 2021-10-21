@@ -118,7 +118,6 @@ C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFit
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\bin\Debug\net5.0\runtimes\win-arm64\lib\net5.0\dotnet-aspnet-codegenerator-design.exe
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\TrackHealthAndFitness.csprojAssemblyReference.cache
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\TrackHealthAndFitness.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\TrackHealthAndFitness.AssemblyInfoInputs.cache
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\TrackHealthAndFitness.AssemblyInfo.cs
@@ -202,3 +201,5 @@ C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFit
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\AddNewExecerise.cshtml.g.cs
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\HomeExercise.cshtml.g.cs
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\PersonalBest.cshtml.g.cs
+C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\ExerciseRoutine.cshtml.g.cs
+C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\TrackHealthAndFitness.csprojAssemblyReference.cache

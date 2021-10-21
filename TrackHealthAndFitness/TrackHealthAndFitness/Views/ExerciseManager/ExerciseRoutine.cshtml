@@ -1,0 +1,71 @@
+﻿@inject UserManager<ApplicationUser> userManager
+@using Microsoft.AspNetCore.Identity
+@model List<FavExercise>
+
+@{
+}
+
+<body>
+    <!-- Tab links -->
+    <div class="tab">
+        <button class="button">Monday</button>
+        <button class="button">Tuesday</button>
+        <button class="button">Wednesday</button>
+        <button class="button">Thursday</button>
+        <button class="button">Friday</button>
+        <button class="button">Saturday</button>
+        <button class="button">Sunday</button>
+    </div>
+
+    <!-- Tab content -->
+    <div id="Track" class="tabcontent">
+        <div class="tile is-ancestor" style="margin-left: 20%; margin-right: 20%;">
+            <!--First Column-->
+            <div class="tile is-parent">
+                <!--Getting the Type Of Content From the User-->
+                <article class="tile is-child is-12 notification content-box-boxshadow is-link">
+                    <form>
+                        <div class="form-group">
+                            <label for="">Weight (kgs)</label>
+                            <input type="text" class="form-control" id="enterWeight" value="" placeholder="Enter Weight">
+                        </div>
+                    </form>
+                    <form>
+                        <div class="form-group">
+                            <label for="">Reps</label>
+                            <input type="text" class="form-control" id="enterReps" value="" placeholder="Enter Reps">
+                        </div>
+                    </form>
+                    <!-- Submit Button -->
+                    <div>
+                        <button class="button is-purple" onclick="SubmitExercise();">Submit</button>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <table id="usersTable" style="" class="table">
+            <thead>
+                <tr id="head" class="head">
+                    <th scope="col">Exercise Name</th>
+                    <th scope="col">Exercise Type</th>     
+                </tr>
+            </thead>
+
+            @foreach (FavExercise item in Model)
+            {
+                if (item != null)
+                {
+                 
+                    <tr>
+                        <td id="ExerciseName">@item.ExerciseName</td>
+                        <td id="Group">@item.TypeOfExercise</td>         
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</body>
+<script>
+   
+</script>

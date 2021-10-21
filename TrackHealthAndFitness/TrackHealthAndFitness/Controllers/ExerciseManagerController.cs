@@ -30,6 +30,19 @@ namespace TrackHealthAndFitness.Controllers
             return View();
         }
 
+        public async Task<List<FavExercise>> getFavExercises(DateTime date)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            List<FavExercise> fav = favExerciseDB.GetFavExercises(user.Id, date);
+            return fav;
+        }
+
+        public async Task<IActionResult> ExerciseRoutine(string Date)
+        {
+            List<FavExercise> favExercises = await getFavExercises(DateTime.Parse(Date));
+            return View(favExercises);
+        }
+
         public async Task<IActionResult> ManageExecerise(string ExerciseName, DifferentExercise.MuscleGroups TypeOfExercise)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -71,8 +84,8 @@ namespace TrackHealthAndFitness.Controllers
 
         public async Task<IActionResult> HomeExercise(string date)
         {
-            //await addFavTestData();
-            await getFavExercises();
+            await addToRoutine(DateTime.Today,"Bench",DifferentExercise.MuscleGroups.Chest);
+            //await getFavExercises();
             if (String.IsNullOrEmpty(date))
             {
                 date = DateTime.Today.ToString();
@@ -174,8 +187,6 @@ namespace TrackHealthAndFitness.Controllers
             await differentExerciseDB.AddExercise(differentExercise);
         }
 
-
-
         public async Task<IActionResult> DeleteExercise(DateTime date, string Id, string inputID, string ExerciseName, ExerciseTracker.MuscleGroups TypeOfExercise, int Reps, int Weight, bool PersonalBest)
         {
             DifferentExercise differentExercise = new DifferentExercise
@@ -199,26 +210,23 @@ namespace TrackHealthAndFitness.Controllers
             return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
         }
 
-        public async Task<IActionResult> addFavTestData()
+
+        public async Task addToRoutine(DateTime dateTime, string ExerciseName, DifferentExercise.MuscleGroups typeOfExercise)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            FavExercise fav = new FavExercise
+            FavExercise favExercise = new FavExercise
             {
-                Date = DateTime.Today,
-                ExerciseName = "Squat",
-                TypeOfExercise = DifferentExercise.MuscleGroups.Legs,
+                Date = dateTime,
+                ExerciseName = ExerciseName,
+                TypeOfExercise = typeOfExercise,
                 UserID = user.Id
             };
-            await favExerciseDB.AddFavExercise(fav);
-            return null;
+            await favExerciseDB.AddFavExercise(favExercise);
         }
 
-        public async Task<List<FavExercise>> getFavExercises()
-        {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            List<FavExercise> fav = favExerciseDB.GetFavExercises(user.Id, DateTime.Today);
-            return fav;
-        }
+     
+
+
         public async Task<IActionResult> SelectExercise(string ExerciseType)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
