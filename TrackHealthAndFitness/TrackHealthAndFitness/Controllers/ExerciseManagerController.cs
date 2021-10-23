@@ -30,16 +30,47 @@ namespace TrackHealthAndFitness.Controllers
             return View();
         }
 
-        public async Task<List<FavExercise>> getFavExercises(DateTime date)
+        public async Task<List<FavExercise>> getFavExercises(DayOfWeek day)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            List<FavExercise> fav = favExerciseDB.GetFavExercises(user.Id, date);
+            List<FavExercise> fav = favExerciseDB.GetFavExercises(user.Id, day);
             return fav;
         }
 
-        public async Task<IActionResult> ExerciseRoutine(string Date)
+        public async Task<IActionResult> ExerciseRoutine(int Date)
         {
-            List<FavExercise> favExercises = await getFavExercises(DateTime.Parse(Date));
+            DayOfWeek dayofWeek = DayOfWeek.Monday;
+            switch (Date)
+            {
+                case 1:
+                    dayofWeek = DayOfWeek.Monday;
+                    break;
+
+                case 2:
+                    dayofWeek = DayOfWeek.Tuesday;
+                    break;
+
+                case 3:
+                    dayofWeek = DayOfWeek.Wednesday;
+                    break;
+
+                case 4:
+                    dayofWeek = DayOfWeek.Thursday;
+                    break;
+
+                case 5:
+                    dayofWeek = DayOfWeek.Friday;
+                    break;
+
+                case 6:
+                    dayofWeek = DayOfWeek.Saturday;
+                    break;
+
+                case 7:
+                    dayofWeek = DayOfWeek.Sunday;
+                    break;
+            }
+            List<FavExercise> favExercises = await getFavExercises(dayofWeek);
             return View(favExercises);
         }
 
@@ -84,7 +115,7 @@ namespace TrackHealthAndFitness.Controllers
 
         public async Task<IActionResult> HomeExercise(string date)
         {
-            await addToRoutine(DateTime.Today,"Bench",DifferentExercise.MuscleGroups.Chest);
+            await addToRoutine(DayOfWeek.Sunday, "Bench", DifferentExercise.MuscleGroups.Chest);
             //await getFavExercises();
             if (String.IsNullOrEmpty(date))
             {
@@ -99,15 +130,15 @@ namespace TrackHealthAndFitness.Controllers
             var user = await _userManager.GetUserAsync(HttpContext.User);
             exercise.dayList = exerciseTrackerDB.GetExercisesFromDay(user.Id, datetime);
 
-            //Works But Needs Changing 
+            //Works But Needs Changing
             personalBestExercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, "Leg Press");
-           
+
             if (exercise.dayList != null)
             {
                 exercise.OneRepMax = ExerciseValidation.OneRepMax(personalBestExercise.Weight, personalBestExercise.Reps);
             }
             exercise.trackedDate = datetime;
-      
+
             return View(exercise);
         }
 
@@ -135,7 +166,7 @@ namespace TrackHealthAndFitness.Controllers
             return View();
         }
 
-        //Adding the set of the exercise 
+        //Adding the set of the exercise
         [Authorize]
         public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps)
         {
@@ -148,7 +179,7 @@ namespace TrackHealthAndFitness.Controllers
 
             ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, exerciseName);
             bool personalbest = false;
-           
+
             if (exercise != null)
             {
                 bool tempBest = false;
@@ -176,7 +207,7 @@ namespace TrackHealthAndFitness.Controllers
             return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
         }
 
-        //adding the type of exercise 
+        //adding the type of exercise
         public async Task AddTypeOfExercise(DifferentExercise.MuscleGroups exerciseType, string exerciseName)
         {
             DifferentExercise differentExercise = new DifferentExercise()
@@ -210,22 +241,18 @@ namespace TrackHealthAndFitness.Controllers
             return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
         }
 
-
-        public async Task addToRoutine(DateTime dateTime, string ExerciseName, DifferentExercise.MuscleGroups typeOfExercise)
+        public async Task addToRoutine(DayOfWeek day, string ExerciseName, DifferentExercise.MuscleGroups typeOfExercise)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             FavExercise favExercise = new FavExercise
             {
-                Date = dateTime,
+                Date = day,
                 ExerciseName = ExerciseName,
                 TypeOfExercise = typeOfExercise,
                 UserID = user.Id
             };
             await favExerciseDB.AddFavExercise(favExercise);
         }
-
-     
-
 
         public async Task<IActionResult> SelectExercise(string ExerciseType)
         {

@@ -10,8 +10,8 @@ using TrackHealthAndFitness.Data;
 namespace TrackHealthAndFitness.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211004203306_Adding Fav Exercise")]
-    partial class AddingFavExercise
+    [Migration("20211023125229_new db")]
+    partial class newdb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -271,18 +271,19 @@ namespace TrackHealthAndFitness.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Date")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ExerciseName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TypeOfExercise")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("exerciseInputID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("exerciseInputID");
 
                     b.ToTable("FavExercise");
                 });
@@ -352,15 +353,6 @@ namespace TrackHealthAndFitness.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("TrackHealthAndFitness.Models.FavExercise", b =>
-                {
-                    b.HasOne("TrackHealthAndFitness.Models.ExerciseTracker", "exercise")
-                        .WithMany()
-                        .HasForeignKey("exerciseInputID");
-
-                    b.Navigation("exercise");
                 });
 
             modelBuilder.Entity("TrackHealthAndFitness.Models.ApplicationUser", b =>

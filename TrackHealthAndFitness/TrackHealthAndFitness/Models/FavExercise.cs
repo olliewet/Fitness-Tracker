@@ -15,7 +15,7 @@ namespace TrackHealthAndFitness.Models
         [Key]
         public int Id { get; set; }
         public string UserID { get; set; }
-        public DateTime Date { get; set; }
+        public DayOfWeek Date { get; set; }
         public MuscleGroups TypeOfExercise { get; set; }
         public string ExerciseName { get; set; }
     }
@@ -65,11 +65,11 @@ namespace TrackHealthAndFitness.Models
             await _context.SaveChangesAsync();
         }
 
-        public List<FavExercise> GetFavExercises(string userID, DateTime dateTime)
+        public List<FavExercise> GetFavExercises(string userID, DayOfWeek day)
         {
             List<FavExercise> favExercisesList = new List<FavExercise>();
             var data = _context.FavExercises.AsQueryable();
-            data = data.Where(c => c.UserID == userID && c.Date == dateTime );
+            data = data.Where(c => c.UserID == userID && c.Date == day);
             foreach (var item in data)
             {
                 favExercisesList.Add(item);
