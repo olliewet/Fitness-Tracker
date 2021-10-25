@@ -31,6 +31,7 @@
                     <tr id="head" class="head">
                         <th scope="col">Muscle Group</th>
                         <th scope="col">Select</th>
+                        <th scope="col">Add to Routine </th>
                     </tr>
                 </thead>
 
@@ -38,12 +39,21 @@
 
                     @foreach (DifferentExercise exercise in Model.differentExercises)
                     {
-                        <tr>
-                            <td id="ExerciseType">@exercise.ExerciseName</td>
-                            <td id="selection">
-                                <button onclick="location.href = '@Html.Raw(Url.Action("ManageExecerise", "ExerciseManager", new {ExerciseName = exercise.ExerciseName, TypeOfExercise = exercise.TypeOfExercise }))'" class="btn btn-success">Select Page</button>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td id="ExerciseType">@exercise.ExerciseName</td>
+                        <td id="selection">
+                            <button onclick="location.href = '@Html.Raw(Url.Action("ManageExecerise", "ExerciseManager", new {ExerciseName = exercise.ExerciseName, TypeOfExercise = exercise.TypeOfExercise }))'" class="btn btn-success">Select Page</button>
+                        </td>
+                        <td id="selection">
+                            <button style="" onclick="location.href = '@Html.Raw(Url.Action("AddExerciseRoutine", "ExerciseManager", new { Date = 1, _ExerciseName = exercise.ExerciseName, _TypeOfExercise = exercise.TypeOfExercise}))'" class="btn btn-success">Monday</button>
+                            <button style="" onclick="location.href = '@Html.Raw(Url.Action("AddExerciseRoutine", "ExerciseManager", new { Date = 2, _ExerciseName = exercise.ExerciseName, _TypeOfExercise = exercise.TypeOfExercise}))'" class="btn btn-success">Tuesday</button>
+                            <button style="" onclick="location.href = '@Html.Raw(Url.Action("AddExerciseRoutine", "ExerciseManager", new { Date = 3, _ExerciseName = exercise.ExerciseName, _TypeOfExercise = exercise.TypeOfExercise}))'" class="btn btn-success">Wednesday</button>
+                            <button style="" onclick="location.href = '@Html.Raw(Url.Action("AddExerciseRoutine", "ExerciseManager", new { Date = 4, _ExerciseName = exercise.ExerciseName, _TypeOfExercise = exercise.TypeOfExercise}))'" class="btn btn-success">Thursday</button>
+                            <button style="" onclick="location.href = '@Html.Raw(Url.Action("AddExerciseRoutine", "ExerciseManager", new { Date = 5, _ExerciseName = exercise.ExerciseName, _TypeOfExercise = exercise.TypeOfExercise}))'" class="btn btn-success">Friday</button>
+                            <button style="" onclick="location.href = '@Html.Raw(Url.Action("AddExerciseRoutine", "ExerciseManager", new { Date = 6, _ExerciseName = exercise.ExerciseName, _TypeOfExercise = exercise.TypeOfExercise}))'" class="btn btn-success">Saturday</button>
+                            <button style="" onclick="location.href = '@Html.Raw(Url.Action("AddExerciseRoutine", "ExerciseManager", new { Date = 7, _ExerciseName = exercise.ExerciseName, _TypeOfExercise = exercise.TypeOfExercise}))'" class="btn btn-success">Sunday</button>
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TrackHealthAndFitness.Models;
+using static TrackHealthAndFitness.Models.DifferentExercise;
 
 namespace TrackHealthAndFitness.Controllers
 {
@@ -72,6 +73,51 @@ namespace TrackHealthAndFitness.Controllers
             }
             List<FavExercise> favExercises = await getFavExercises(dayofWeek);
             return View(favExercises);
+        }
+
+        public async Task AddExerciseRoutine(int Date, string _ExerciseName, MuscleGroups _TypeOfExercise)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            DayOfWeek dayofWeek = DayOfWeek.Monday;
+            switch (Date)
+            {
+                case 1:
+                    dayofWeek = DayOfWeek.Monday;
+                    break;
+
+                case 2:
+                    dayofWeek = DayOfWeek.Tuesday;
+                    break;
+
+                case 3:
+                    dayofWeek = DayOfWeek.Wednesday;
+                    break;
+
+                case 4:
+                    dayofWeek = DayOfWeek.Thursday;
+                    break;
+
+                case 5:
+                    dayofWeek = DayOfWeek.Friday;
+                    break;
+
+                case 6:
+                    dayofWeek = DayOfWeek.Saturday;
+                    break;
+
+                case 7:
+                    dayofWeek = DayOfWeek.Sunday;
+                    break;
+            }
+            FavExercise fav = new FavExercise
+            {
+                ExerciseName = _ExerciseName,
+                Date = dayofWeek,
+                UserID = user.Id,
+                TypeOfExercise = _TypeOfExercise
+            };
+
+            await favExerciseDB.AddFavExercise(fav);
         }
 
         public async Task<IActionResult> ManageExecerise(string ExerciseName, DifferentExercise.MuscleGroups TypeOfExercise)
