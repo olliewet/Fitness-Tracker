@@ -75,7 +75,7 @@ namespace TrackHealthAndFitness.Controllers
             return View(favExercises);
         }
 
-        public async Task AddExerciseRoutine(int Date, string _ExerciseName, MuscleGroups _TypeOfExercise)
+        public async Task<IActionResult> AddExerciseRoutine(int Date, string _ExerciseName, MuscleGroups _TypeOfExercise, string ExerciseType)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             DayOfWeek dayofWeek = DayOfWeek.Monday;
@@ -116,8 +116,8 @@ namespace TrackHealthAndFitness.Controllers
                 UserID = user.Id,
                 TypeOfExercise = _TypeOfExercise
             };
-
             await favExerciseDB.AddFavExercise(fav);
+            return RedirectToAction("ExerciseRoutine", new { Date = 1 });
         }
 
         public async Task<IActionResult> ManageExecerise(string ExerciseName, DifferentExercise.MuscleGroups TypeOfExercise)
@@ -161,7 +161,7 @@ namespace TrackHealthAndFitness.Controllers
 
         public async Task<IActionResult> HomeExercise(string date)
         {
-            await addToRoutine(DayOfWeek.Sunday, "Bench", DifferentExercise.MuscleGroups.Chest);
+
             //await getFavExercises();
             if (String.IsNullOrEmpty(date))
             {
@@ -192,9 +192,7 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<string> GetAverage(string ExerciseName)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            int counter = 0;
-            int weightAverage = 0;
-            int repAverage = 0;
+            int counter = 0, weightAverage = 0, repAverage = 0 ;
             List<ExerciseTracker> listOfExercises = new List<ExerciseTracker>();
             listOfExercises = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName);
             foreach (ExerciseTracker item in listOfExercises)
@@ -299,6 +297,20 @@ namespace TrackHealthAndFitness.Controllers
             };
             await favExerciseDB.AddFavExercise(favExercise);
         }
+        public async Task <IActionResult> removeFromRoutine(DayOfWeek day, string ExerciseName, DifferentExercise.MuscleGroups typeOfExercise)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            FavExercise favExercise = new FavExercise
+            {
+                Id = 1,
+                Date = day,
+                ExerciseName = ExerciseName,
+                TypeOfExercise = typeOfExercise,
+                UserID = user.Id
+            };
+            await favExerciseDB.RemoveFavExercise(favExercise);
+            return RedirectToAction("ExerciseRoutine", new { Date = 1 });
+        }
 
         public async Task<IActionResult> SelectExercise(string ExerciseType)
         {
@@ -309,7 +321,7 @@ namespace TrackHealthAndFitness.Controllers
             {
                 case "Abs":
                     selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Abs);
-                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Abs;
+                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Abs;        
                     break;
 
                 case "Back":

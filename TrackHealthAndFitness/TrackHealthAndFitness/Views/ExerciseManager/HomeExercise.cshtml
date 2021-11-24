@@ -30,8 +30,6 @@
         <button style="" onclick="location.href = '@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new { ExerciseName = Model.ExerciseName, date = Model.trackedDate.AddDays(-1).ToString()}))'" class="btn btn-success">Backward</button>
         <button style="" onclick="location.href = '@Html.Raw(Url.Action("HomeExercise", "ExerciseManager", new { ExerciseName = Model.ExerciseName, date = Model.trackedDate.AddDays(1).ToString()}))'" class="btn btn-success">Forward</button>
         <button style="" onclick="location.href = '@Html.Raw(Url.Action("ExerciseRoutine", "ExerciseManager", new { Date = 1}))'" class="btn btn-success">Day Of Week</button>
-
-        <label>@OneRepMax</label>
     </div>
 
         @foreach (var group in Model.dayList.GroupBy(x => x.ExerciseName))

@@ -42,7 +42,7 @@ namespace TrackHealthAndFitness.Models
         public async Task RemoveFavExercise(FavExercise exercise)
         {
             try
-            {
+            { 
                 _context.FavExercises.Remove(exercise);
                 await _context.SaveChangesAsync();
             }
