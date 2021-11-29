@@ -28,7 +28,7 @@
             <thead>
                 <tr id="head" class="head">
                     <th scope="col">Exercise Name</th>
-                    <th scope="col">Exercise Type</th>  
+                    <th scope="col">Exercise Type</th>
                     <th scope="col">Remove Exercise</th>
                 </tr>
             </thead>
@@ -37,12 +37,11 @@
             {
                 if (item != null)
                 {
-                 
-        <tr>
-            <td id="ExerciseName">@item.ExerciseName</td>
-            <td id="Group">@item.TypeOfExercise</td>
-            <td id=""><button style="" onclick="location.href = '@Html.Raw(Url.Action("removeFromRoutine", "ExerciseManager", new { Day = item.Date, ExerciseName = item.ExerciseName, typeOfExercise = item.TypeOfExercise}))'" class="btn btn-success">Monday</button></td>
-        </tr>
+                    <tr>
+                        <td id="ExerciseName">@item.ExerciseName</td>
+                        <td id="Group">@item.TypeOfExercise</td>
+                        <td id=""><button style="" onclick="location.href = '@Html.Raw(Url.Action("removeFromRoutine", "ExerciseManager", new {Id = item.Id, Day = item.Date, ExerciseName = item.ExerciseName, typeOfExercise = item.TypeOfExercise}))'" class="btn btn-success">Remove Exercise</button></td>
+                    </tr>
                 }
             }
         </table>

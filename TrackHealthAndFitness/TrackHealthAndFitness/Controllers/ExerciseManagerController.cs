@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TrackHealthAndFitness.Helpers;
 using TrackHealthAndFitness.Models;
 using static TrackHealthAndFitness.Models.DifferentExercise;
 
@@ -40,37 +41,7 @@ namespace TrackHealthAndFitness.Controllers
 
         public async Task<IActionResult> ExerciseRoutine(int Date)
         {
-            DayOfWeek dayofWeek = DayOfWeek.Monday;
-            switch (Date)
-            {
-                case 1:
-                    dayofWeek = DayOfWeek.Monday;
-                    break;
-
-                case 2:
-                    dayofWeek = DayOfWeek.Tuesday;
-                    break;
-
-                case 3:
-                    dayofWeek = DayOfWeek.Wednesday;
-                    break;
-
-                case 4:
-                    dayofWeek = DayOfWeek.Thursday;
-                    break;
-
-                case 5:
-                    dayofWeek = DayOfWeek.Friday;
-                    break;
-
-                case 6:
-                    dayofWeek = DayOfWeek.Saturday;
-                    break;
-
-                case 7:
-                    dayofWeek = DayOfWeek.Sunday;
-                    break;
-            }
+            DayOfWeek dayofWeek = DateHelper.intToDay(Date);
             List<FavExercise> favExercises = await getFavExercises(dayofWeek);
             return View(favExercises);
         }
@@ -78,37 +49,8 @@ namespace TrackHealthAndFitness.Controllers
         public async Task<IActionResult> AddExerciseRoutine(int Date, string _ExerciseName, MuscleGroups _TypeOfExercise, string ExerciseType)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            DayOfWeek dayofWeek = DayOfWeek.Monday;
-            switch (Date)
-            {
-                case 1:
-                    dayofWeek = DayOfWeek.Monday;
-                    break;
-
-                case 2:
-                    dayofWeek = DayOfWeek.Tuesday;
-                    break;
-
-                case 3:
-                    dayofWeek = DayOfWeek.Wednesday;
-                    break;
-
-                case 4:
-                    dayofWeek = DayOfWeek.Thursday;
-                    break;
-
-                case 5:
-                    dayofWeek = DayOfWeek.Friday;
-                    break;
-
-                case 6:
-                    dayofWeek = DayOfWeek.Saturday;
-                    break;
-
-                case 7:
-                    dayofWeek = DayOfWeek.Sunday;
-                    break;
-            }
+            DayOfWeek dayofWeek = DateHelper.intToDay(Date);
+           
             FavExercise fav = new FavExercise
             {
                 ExerciseName = _ExerciseName,
@@ -146,23 +88,8 @@ namespace TrackHealthAndFitness.Controllers
             return View(personalBestTracker);
         }
 
-        private string RemoveTime(string date)
-        {
-            // Remove a substring from the middle of the string.
-            string toRemove = "00:00:00";
-            string result = string.Empty;
-            int i = date.IndexOf(toRemove);
-            if (i >= 0)
-            {
-                result = date.Remove(i, toRemove.Length);
-            }
-            return result;
-        }
-
         public async Task<IActionResult> HomeExercise(string date)
         {
-
-            //await getFavExercises();
             if (String.IsNullOrEmpty(date))
             {
                 date = DateTime.Today.ToString();
@@ -170,7 +97,7 @@ namespace TrackHealthAndFitness.Controllers
 
             ExerciseValidation exerciseValidation = new ExerciseValidation();
             ExerciseTracker personalBestExercise = new ExerciseTracker();
-            string newDate = RemoveTime(date);
+            string newDate = DateHelper.RemoveTime(date);
             DateTime datetime = DateTime.Parse(newDate);
             Exercise exercise = new Exercise();
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -297,12 +224,12 @@ namespace TrackHealthAndFitness.Controllers
             };
             await favExerciseDB.AddFavExercise(favExercise);
         }
-        public async Task <IActionResult> removeFromRoutine(DayOfWeek day, string ExerciseName, DifferentExercise.MuscleGroups typeOfExercise)
+        public async Task <IActionResult> removeFromRoutine(int Id, DayOfWeek day, string ExerciseName, DifferentExercise.MuscleGroups typeOfExercise)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             FavExercise favExercise = new FavExercise
             {
-                Id = 1,
+                Id = Id,
                 Date = day,
                 ExerciseName = ExerciseName,
                 TypeOfExercise = typeOfExercise,
