@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TrackHealthAndFitness.Data;
 using TrackHealthAndFitness.Models;
+using TrackHealthAndFitness.Repositories;
 
 namespace TrackHealthAndFitness
 {
@@ -33,9 +34,9 @@ namespace TrackHealthAndFitness
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultUI()
                     .AddDefaultTokenProviders();
-            services.AddScoped<ExerciseTrackerDBAccessLayer, ExerciseTrackerDBAccessLayer>();
-            services.AddScoped<DifferentExerciseDBAccessLayer, DifferentExerciseDBAccessLayer>();
-            services.AddScoped<FavExerciseDBLayer, FavExerciseDBLayer>();
+            services.AddScoped<ExerciseTrackerDBRepo, ExerciseTrackerDBRepo>();
+            services.AddScoped<DifferentExerciseDBRepo, DifferentExerciseDBRepo>();
+            services.AddScoped<FavExerciseDBRepo, FavExerciseDBRepo>();
             services.AddControllersWithViews();
         }
 

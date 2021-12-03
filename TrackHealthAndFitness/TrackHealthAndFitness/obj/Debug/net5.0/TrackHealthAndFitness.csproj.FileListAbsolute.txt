@@ -202,4 +202,4 @@ C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFit
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\HomeExercise.cshtml.g.cs
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\PersonalBest.cshtml.g.cs
 C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\Razor\Views\ExerciseManager\ExerciseRoutine.cshtml.g.cs
-C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\TrackHealthAndFitness.csprojAssemblyReference.cache
+C:\Users\Ollie\Desktop\Work\TrackFitness\TrackHealthAndFitness\TrackHealthAndFitness\obj\Debug\net5.0\TrackHealthAndFitness.csproj.AssemblyReference.cache

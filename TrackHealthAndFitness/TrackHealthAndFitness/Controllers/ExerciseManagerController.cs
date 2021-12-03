@@ -6,19 +6,20 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TrackHealthAndFitness.Helpers;
 using TrackHealthAndFitness.Models;
+using TrackHealthAndFitness.Repositories;
 using static TrackHealthAndFitness.Models.DifferentExercise;
 
 namespace TrackHealthAndFitness.Controllers
 {
     public class ExerciseManagerController : Controller
     {
-        private readonly ExerciseTrackerDBAccessLayer exerciseTrackerDB = null;
-        private readonly FavExerciseDBLayer favExerciseDB = null;
-        private readonly DifferentExerciseDBAccessLayer differentExerciseDB = null;
+        private readonly ExerciseTrackerDBRepo exerciseTrackerDB = null;
+        private readonly FavExerciseDBRepo favExerciseDB = null;
+        private readonly DifferentExerciseDBRepo differentExerciseDB = null;
         private readonly SignInManager<ApplicationUser> _signManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ExerciseManagerController(ExerciseTrackerDBAccessLayer eDb, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DifferentExerciseDBAccessLayer deDB, FavExerciseDBLayer favExercise)
+        public ExerciseManagerController(ExerciseTrackerDBRepo eDb, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DifferentExerciseDBRepo deDB, FavExerciseDBRepo favExercise)
         {
             exerciseTrackerDB = eDb;
             _signManager = signInManager;
