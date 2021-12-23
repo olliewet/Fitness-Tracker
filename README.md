@@ -2,8 +2,8 @@
 Application used for tracking fitness Progress
 ## To Do List 
 ### Refactor and Quality of life improvements 
-- Removes Exercises from List 
-- Refactor the database access layers to sql reporities 
+- Removes Exercises from List (Completed)
+- Refactor the database access layers to sql reporities (Completed) 
 - Refactor the exercise controller 
 - Implement fully object orieneted code (Interfaces, Inheritance) 
 - Refactor the classes as models 
