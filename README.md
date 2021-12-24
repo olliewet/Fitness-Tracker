@@ -14,3 +14,4 @@ Application used for tracking fitness Progress
 
 
 
+https://medium.com/net-core/repository-pattern-implementation-in-asp-net-core-21e01c6664d7
