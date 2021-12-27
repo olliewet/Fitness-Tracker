@@ -7,7 +7,7 @@ using TrackHealthAndFitness.Models;
 
 namespace TrackHealthAndFitness.Repositories
 {
-    public class ExerciseTrackerDBRepo
+    public class ExerciseTrackerDBRepo:IExerciseTrackerRepository
     {
         private readonly ApplicationDbContext _context = null;
 
@@ -20,7 +20,7 @@ namespace TrackHealthAndFitness.Repositories
         /// Add Exercise To Database
         /// </summary>
         /// <param name="exercise"></param>
-        public async Task AddExercise(ExerciseTracker exercise)
+        public async Task Add(ExerciseTracker exercise)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace TrackHealthAndFitness.Repositories
         /// Remove Exercise From Database
         /// </summary>
         /// <param name="exercise"></param>
-        public async Task RemoveExercise(ExerciseTracker exercise)
+        public async Task Remove(ExerciseTracker exercise)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace TrackHealthAndFitness.Repositories
             }
         }
 
-        public async void DeleteTable()
+        public async Task DeleteTable()
         {
             var itemsToDelete = _context.Set<ExerciseTracker>();
             _context.ExecriseTracker.RemoveRange(itemsToDelete);
@@ -61,7 +61,7 @@ namespace TrackHealthAndFitness.Repositories
         /// Update Exercise
         /// </summary>
         /// <param name="exercise"></param>
-        public async Task UpdateExercise(ExerciseTracker exercise)
+        public async Task Update(ExerciseTracker exercise)
         {
             _context.ExecriseTracker.Update(exercise);
             await _context.SaveChangesAsync();

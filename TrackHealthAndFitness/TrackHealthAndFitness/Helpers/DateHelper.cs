@@ -17,7 +17,7 @@ namespace TrackHealthAndFitness.Helpers
             {
                 result = date.Remove(i, toRemove.Length);
             }
-            return result;
+            return result.TrimEnd();
         }
         /// <summary>
         /// Returns the assoicated day of the week

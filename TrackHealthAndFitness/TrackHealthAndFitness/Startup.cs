@@ -34,9 +34,9 @@ namespace TrackHealthAndFitness
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultUI()
                     .AddDefaultTokenProviders();
-            services.AddScoped<ExerciseTrackerDBRepo, ExerciseTrackerDBRepo>();
-            services.AddScoped<DifferentExerciseDBRepo, DifferentExerciseDBRepo>();
-            services.AddScoped<FavExerciseDBRepo, FavExerciseDBRepo>();
+            services.AddScoped<IExerciseTrackerRepository, ExerciseTrackerDBRepo>();
+            services.AddScoped<IDifferentExerciseRepository, DifferentExerciseDBRepo>();
+            services.AddScoped<IFavExerciseRepository, FavExerciseDBRepo>();
             services.AddControllersWithViews();
         }
 

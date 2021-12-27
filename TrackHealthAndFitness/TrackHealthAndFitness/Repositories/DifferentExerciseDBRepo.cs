@@ -7,7 +7,7 @@ using TrackHealthAndFitness.Models;
 
 namespace TrackHealthAndFitness.Repositories
 {
-    public class DifferentExerciseDBRepo
+    public class DifferentExerciseDBRepo:IDifferentExerciseRepository
     {
         private readonly ApplicationDbContext _context = null;
 
@@ -15,8 +15,7 @@ namespace TrackHealthAndFitness.Repositories
         {
             _context = context;
         }
-
-        public async Task AddExercise(DifferentExercise exercise)
+        public async Task Add(DifferentExercise exercise)
         {
             try
             {
@@ -44,13 +43,7 @@ namespace TrackHealthAndFitness.Repositories
             }
         }
 
-
-
-        /// <summary>
-        /// Remove Exercise From Database
-        /// </summary>
-        /// <param name="exercise"></param>
-        public async Task RemoveExercise(DifferentExercise exercise)
+        public async Task Remove(DifferentExercise exercise)
         {
             try
             {
@@ -62,16 +55,16 @@ namespace TrackHealthAndFitness.Repositories
             }
         }
 
-        public async void DeleteTable()
+        public async Task Update(DifferentExercise exercise)
         {
-            var itemsToDelete = _context.Set<DifferentExercise>();
-            _context.DifferentExercises.RemoveRange(itemsToDelete);
+            _context.DifferentExercises.Update(exercise);
             await _context.SaveChangesAsync();
         }
 
-        public async void UpdateExercise(DifferentExercise exercise)
+        public async Task DeleteTable()
         {
-            _context.DifferentExercises.Update(exercise);
+            var itemsToDelete = _context.Set<DifferentExercise>();
+            _context.DifferentExercises.RemoveRange(itemsToDelete);
             await _context.SaveChangesAsync();
         }
 

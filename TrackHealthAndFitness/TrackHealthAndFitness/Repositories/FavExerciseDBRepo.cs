@@ -7,7 +7,7 @@ using TrackHealthAndFitness.Models;
 
 namespace TrackHealthAndFitness.Repositories
 {
-    public class FavExerciseDBRepo
+    public class FavExerciseDBRepo: IFavExerciseRepository
     {
         private readonly ApplicationDbContext _context = null;
         public FavExerciseDBRepo(ApplicationDbContext context)
@@ -15,7 +15,7 @@ namespace TrackHealthAndFitness.Repositories
             _context = context;
         }
 
-        public async Task AddFavExercise(FavExercise exercise)
+        public async Task Add(FavExercise exercise)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace TrackHealthAndFitness.Repositories
 
             }
         }
-        public async Task RemoveFavExercise(FavExercise exercise)
+        public async Task Remove(FavExercise exercise)
         {
             try
             {
@@ -40,14 +40,14 @@ namespace TrackHealthAndFitness.Repositories
             }
         }
 
-        public async void DeleteTable()
+        public async Task DeleteTable()
         {
             var itemsToDelete = _context.Set<FavExercise>();
             _context.FavExercises.RemoveRange(itemsToDelete);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateFavExercise(FavExercise exercise)
+        public async Task Update(FavExercise exercise)
         {
             _context.FavExercises.Update(exercise);
             await _context.SaveChangesAsync();

@@ -15,10 +15,10 @@ namespace TrackHealthAndFitness.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ExerciseTrackerDBRepo exerciseTrackerDB = null;
+        private readonly IExerciseTrackerRepository exerciseTrackerDB = null;
         private readonly SignInManager<ApplicationUser> _signManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        public HomeController(ILogger<HomeController> logger, ExerciseTrackerDBRepo eDb, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public HomeController(ILogger<HomeController> logger, IExerciseTrackerRepository eDb, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             exerciseTrackerDB = eDb;
             _logger = logger;
