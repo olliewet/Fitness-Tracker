@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TrackHealthAndFitness.ExerciseManagers;
+
 using TrackHealthAndFitness.Helpers;
 using TrackHealthAndFitness.Models;
 using TrackHealthAndFitness.Repositories;
@@ -34,7 +34,7 @@ namespace TrackHealthAndFitness.Controllers
             return View();
         }
 
-    
+        #region Exercise Routine 
 
         public async Task<IActionResult> ExerciseRoutine(int Date)
         {
@@ -59,23 +59,41 @@ namespace TrackHealthAndFitness.Controllers
             return RedirectToAction("ExerciseRoutine", new { Date = 1 });
         }
 
+        public async Task<IActionResult> removeFromRoutine(int Id, DayOfWeek day, string ExerciseName, DifferentExercise.MuscleGroups typeOfExercise)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            FavExercise favExercise = new FavExercise
+            {
+                Id = Id,
+                Date = day,
+                ExerciseName = ExerciseName,
+                TypeOfExercise = typeOfExercise,
+                UserID = user.Id
+            };
+            await favExerciseDB.Remove(favExercise);
+            return RedirectToAction("ExerciseRoutine", new { Date = 1 });
+        }
+        #endregion
+
+        #region Manage Exercise 
         public async Task<IActionResult> ManageExecerise(string ExerciseName, DifferentExercise.MuscleGroups TypeOfExercise)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            Exercise exercise = new Exercise();
             ExerciseTracker personalBest = exerciseTrackerDB.GetPersonalBestExercise(user.Id, ExerciseName);
-            exercise.ExerciseName = ExerciseName;
-            exercise.TypeOfExercise = TypeOfExercise;
-            exercise.exerciseTrackers = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName);
-
-            // await GetAverage(ExerciseName);
-            exercise.dayList = exercise.exerciseTrackers.FindAll(x => x.Date == DateTime.Today);
-            //Sorts the Dates of the Exercises Into Oldest to Knewest
-            //exercise.exerciseTrackers.Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+            Exercise exercise = new Exercise()
+            {
+                ExerciseName = ExerciseName,
+                TypeOfExercise = TypeOfExercise,
+                exerciseTrackers = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName),
+                dayList = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName).FindAll(x => x.Date == DateTime.Today),
+                OneRepMax = ExerciseValidation.OneRepMax(personalBest.Weight, personalBest.Reps)
+            };
             exercise.exerciseTrackers.Sort((x, y) => y.Date.CompareTo(x.Date));
-            exercise.OneRepMax = ExerciseValidation.OneRepMax(personalBest.Weight, personalBest.Reps);
             return View(exercise);
         }
+        #endregion
+
+        #region Personal Best 
 
         public async Task<IActionResult> PersonalBest(ExerciseTracker.MuscleGroups TypeOfExercise)
         {
@@ -84,50 +102,42 @@ namespace TrackHealthAndFitness.Controllers
             return View(personalBestTracker);
         }
 
+        #endregion
+
+        #region Home Exercise 
+
         public async Task<IActionResult> HomeExercise(string date)
         {
             if (String.IsNullOrEmpty(date))
             {
                 date = DateTime.Today.ToString();
             }
-
-            ExerciseValidation exerciseValidation = new ExerciseValidation();
-            ExerciseTracker personalBestExercise = new ExerciseTracker();
-            string newDate = DateHelper.RemoveTime(date);
-            DateTime datetime = DateTime.Parse(newDate);
-            Exercise exercise = new Exercise();
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            exercise.dayList = exerciseTrackerDB.GetExercisesFromDay(user.Id, datetime);
-
-            //Works But Needs Changing
-            personalBestExercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, "Leg Press");
-
-            if (exercise.dayList != null)
+            DateTime datetime = DateTime.Parse(DateHelper.RemoveTime(date));
+            var dayList = exerciseTrackerDB.GetExercisesFromDay(user.Id, datetime);
+            Exercise exercise = new Exercise();
+            if (dayList != null)
             {
-                exercise.OneRepMax = ExerciseValidation.OneRepMax(personalBestExercise.Weight, personalBestExercise.Reps);
+                exercise = new Exercise()
+                {
+                    dayList = dayList,
+                    trackedDate = datetime
+                };
             }
-            exercise.trackedDate = datetime;
-
+                  
             return View(exercise);
         }
+        #endregion
 
-        //Used to get the average of a set
+        #region Get Average 
         public async Task<string> GetAverage(string ExerciseName)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            int counter = 0, weightAverage = 0, repAverage = 0 ;
-            List<ExerciseTracker> listOfExercises = exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName);
- 
-            foreach (ExerciseTracker item in listOfExercises)
-            {
-                counter++;
-                weightAverage = weightAverage + item.Weight;
-                repAverage = repAverage + item.Reps;
-            }
-
-            return "Average weight of :" + weightAverage / counter + " with the average reps of :" + repAverage / counter;
+            return ExerciseValidation.ReturnAverageWeight(exerciseTrackerDB.GetExerciseHistory(user.Id, ExerciseName));    
         }
+        #endregion
 
+        #region Add New Exercise 
         public IActionResult AddNewExecerise()
         {
             return View();
@@ -174,7 +184,9 @@ namespace TrackHealthAndFitness.Controllers
             return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
         }
 
-        //adding the type of exercise
+        #endregion
+
+        #region Add Type Of Exercise 
         public async Task AddTypeOfExercise(DifferentExercise.MuscleGroups exerciseType, string exerciseName)
         {
             DifferentExercise differentExercise = new DifferentExercise()
@@ -184,7 +196,9 @@ namespace TrackHealthAndFitness.Controllers
             };
             await differentExerciseDB.Add(differentExercise);
         }
+        #endregion
 
+        #region Delete Exercise 
         public async Task<IActionResult> DeleteExercise(DateTime date, string Id, string inputID, string ExerciseName, ExerciseTracker.MuscleGroups TypeOfExercise, int Reps, int Weight, bool PersonalBest)
         {
             DifferentExercise differentExercise = new DifferentExercise
@@ -207,83 +221,59 @@ namespace TrackHealthAndFitness.Controllers
 
             return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
         }
+        #endregion
 
-        public async Task addToRoutine(DayOfWeek day, string ExerciseName, DifferentExercise.MuscleGroups typeOfExercise)
-        {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            FavExercise favExercise = new FavExercise
-            {
-                Date = day,
-                ExerciseName = ExerciseName,
-                TypeOfExercise = typeOfExercise,
-                UserID = user.Id
-            };
-            await favExerciseDB.Add(favExercise);
-        }
-        public async Task <IActionResult> removeFromRoutine(int Id, DayOfWeek day, string ExerciseName, DifferentExercise.MuscleGroups typeOfExercise)
-        {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            FavExercise favExercise = new FavExercise
-            {
-                Id = Id,
-                Date = day,
-                ExerciseName = ExerciseName,
-                TypeOfExercise = typeOfExercise,
-                UserID = user.Id
-            };
-            await favExerciseDB.Remove(favExercise);
-            return RedirectToAction("ExerciseRoutine", new { Date = 1 });
-        }
+        #region Select Exercise 
+                public async Task<IActionResult> SelectExercise(string ExerciseType)
+                {
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
+                    ExerciseDetail selectedExerciseType = new ExerciseDetail();
+                    //Needs Improving
+                    switch (ExerciseType)
+                    {
+                        case "Abs":
+                            selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Abs);
+                            selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Abs;        
+                            break;
 
-        public async Task<IActionResult> SelectExercise(string ExerciseType)
-        {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            ExerciseDetail selectedExerciseType = new ExerciseDetail();
-            //Needs Improving
-            switch (ExerciseType)
-            {
-                case "Abs":
-                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Abs);
-                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Abs;        
-                    break;
+                        case "Back":
+                            selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Back);
+                            selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Back;
+                            break;
 
-                case "Back":
-                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Back);
-                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Back;
-                    break;
+                        case "Biceps":
+                            selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Biceps);
+                            selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Biceps;
+                            break;
 
-                case "Biceps":
-                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Biceps);
-                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Biceps;
-                    break;
+                        case "Cardio":
+                            selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Cardio);
+                            selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Cardio;
+                            break;
 
-                case "Cardio":
-                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Cardio);
-                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Cardio;
-                    break;
+                        case "Chest":
+                            selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Chest);
+                            selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Chest;
+                            break;
 
-                case "Chest":
-                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Chest);
-                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Chest;
-                    break;
+                        case "Legs":
+                            selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Legs);
+                            selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Legs;
+                            break;
 
-                case "Legs":
-                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Legs);
-                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Legs;
-                    break;
+                        case "Shoulders":
+                            selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Shoulders);
+                            selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Shoulders;
+                            break;
 
-                case "Shoulders":
-                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Shoulders);
-                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Shoulders;
-                    break;
+                        case "Triceps":
+                            selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Triceps);
+                            selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Triceps;
+                            break;
+                    }
 
-                case "Triceps":
-                    selectedExerciseType.differentExercises = differentExerciseDB.GetExercisesFromGroup(DifferentExercise.MuscleGroups.Triceps);
-                    selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Triceps;
-                    break;
-            }
-
-            return View(selectedExerciseType);
-        }
+                    return View(selectedExerciseType);
+                }
+        #endregion
     }
 }

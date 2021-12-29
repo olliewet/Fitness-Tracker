@@ -23,5 +23,24 @@ namespace TrackHealthAndFitness.Models
             double answer = Weight * Reps * t;
             return answer + Weight;
         }
+
+        public static string ReturnAverageWeight(List<ExerciseTracker> ExerciseList)
+        {
+            if(!ExerciseList.Any())
+            {
+                return "Invalid Data";
+            }
+
+            int counter = 0, weightAverage = 0, repAverage = 0;
+            foreach (ExerciseTracker item in ExerciseList)
+            {
+                counter++;
+                weightAverage = weightAverage + item.Weight;
+                repAverage = repAverage + item.Reps;
+            }
+
+            return "Average weight of :" + weightAverage / counter + " with the average reps of :" + repAverage / counter;
+   
+        }
     }
 }
