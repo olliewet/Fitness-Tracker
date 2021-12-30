@@ -6,20 +6,12 @@
     ViewData["Title"] = "Select Exercise";
 
     int counter = 0;
-
-    DifferentExercise different = new DifferentExercise();
-    different.ExerciseName = Model.ExerciseName;
-    different.TypeOfExercise = Model.TypeOfExercise;
-
     string date = DateTime.Today.ToString();
-
-    //Sorting Through
-
-    bool isEmpty = false;
-    if (Model != null)
+    DifferentExercise different = new DifferentExercise()
     {
-        isEmpty = true;
-    }
+        ExerciseName = Model.ExerciseName,
+        TypeOfExercise = Model.TypeOfExercise
+    };
 }
 
 <body>

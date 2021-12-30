@@ -112,6 +112,7 @@ namespace TrackHealthAndFitness.Controllers
             {
                 date = DateTime.Today.ToString();
             }
+           
             var user = await _userManager.GetUserAsync(HttpContext.User);
             DateTime datetime = DateTime.Parse(DateHelper.RemoveTime(date));
             var dayList = exerciseTrackerDB.GetExercisesFromDay(user.Id, datetime);
@@ -143,26 +144,18 @@ namespace TrackHealthAndFitness.Controllers
             return View();
         }
 
-        //Adding the set of the exercise
+        
         [Authorize]
         public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            DifferentExercise differentExercise = new DifferentExercise
-            {
-                ExerciseName = exerciseName,
-                TypeOfExercise = (DifferentExercise.MuscleGroups)muscle
-            };
-
             ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, exerciseName);
+            //Personal Best Does Not incorporate reps 
             bool personalbest = false;
-
             if (exercise != null)
-            {
-                bool tempBest = false;
-                tempBest = ExerciseValidation.isPersonalBest(int.Parse(Weight), exercise.Weight);
-                exercise.PersonalBest = !tempBest;
-                personalbest = tempBest;
+            {          
+                personalbest = ExerciseValidation.isPersonalBest(int.Parse(Weight), exercise.Weight);
+                exercise.PersonalBest = !personalbest;
                 await exerciseTrackerDB.Update(exercise);
             }
             else
@@ -181,7 +174,7 @@ namespace TrackHealthAndFitness.Controllers
                 Weight = int.Parse(Weight)
             };
             await exerciseTrackerDB.Add(newExercise);
-            return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
+            return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = exerciseName, TypeOfExercise = muscle });
         }
 
         #endregion
@@ -201,11 +194,6 @@ namespace TrackHealthAndFitness.Controllers
         #region Delete Exercise 
         public async Task<IActionResult> DeleteExercise(DateTime date, string Id, string inputID, string ExerciseName, ExerciseTracker.MuscleGroups TypeOfExercise, int Reps, int Weight, bool PersonalBest)
         {
-            DifferentExercise differentExercise = new DifferentExercise
-            {
-                ExerciseName = ExerciseName,
-                TypeOfExercise = (DifferentExercise.MuscleGroups)TypeOfExercise
-            };
             ExerciseTracker exercise = new ExerciseTracker
             {
                 Date = date,
@@ -218,8 +206,7 @@ namespace TrackHealthAndFitness.Controllers
                 Weight = Weight
             };
             await exerciseTrackerDB.Remove(exercise);
-
-            return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = differentExercise.ExerciseName, TypeOfExercise = differentExercise.TypeOfExercise });
+            return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = ExerciseName, TypeOfExercise = TypeOfExercise });
         }
         #endregion
 
@@ -271,7 +258,6 @@ namespace TrackHealthAndFitness.Controllers
                             selectedExerciseType.TypeOfExercise = ExerciseTracker.MuscleGroups.Triceps;
                             break;
                     }
-
                     return View(selectedExerciseType);
                 }
         #endregion

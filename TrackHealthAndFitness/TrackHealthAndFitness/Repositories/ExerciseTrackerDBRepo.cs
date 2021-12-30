@@ -155,5 +155,16 @@ namespace TrackHealthAndFitness.Repositories
             }
             return exercisesList;
         }
+
+        public List<ExerciseTracker> GetRepsRecordsForExercise(string userID, string exerciseName)
+        {
+            List<ExerciseTracker> exercisesList = GetExerciseHistory(userID, exerciseName);          
+            return exercisesList.OrderByDescending(e => e.Reps).Take(5).ToList(); 
+        }
+        public List<ExerciseTracker> GetWeightRecordsForExercise(string userID, string exerciseName)
+        {
+            List<ExerciseTracker> exercisesList = GetExerciseHistory(userID, exerciseName);
+            return exercisesList.OrderByDescending(e => e.Weight).Take(5).ToList();
+        }
     }
 }

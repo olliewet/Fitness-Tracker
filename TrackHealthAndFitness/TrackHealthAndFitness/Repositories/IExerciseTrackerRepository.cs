@@ -16,5 +16,7 @@ namespace TrackHealthAndFitness.Repositories
         List<ExerciseTracker> GetExerciseHistory(string userID, string exerciseName);
         List<ExerciseTracker> GetExercisesFromDay(string userID, DateTime date);
         List<ExerciseTracker> GetExercisePersonalBestHistory(string userID, ExerciseTracker.MuscleGroups muscleGroups);
+        List<ExerciseTracker> GetRepsRecordsForExercise(string userID, string exerciseName);
+        List<ExerciseTracker> GetWeightRecordsForExercise(string userID, string exerciseName);
     }
 }
