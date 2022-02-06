@@ -41,6 +41,12 @@
                             <input type="text" class="form-control" id="enterReps" value="" placeholder="Enter Reps">
                         </div>
                     </form>
+                    <form>
+                        <div class="form-group">
+                            <label for="">Notes</label>
+                            <input type="text" class="form-control" id="enterNote" value="" placeholder="Enter Reps">
+                        </div>
+                    </form>
                     <!-- Submit Button -->
                     <div>
                         <button class="button is-purple" onclick="SubmitExercise();">Submit</button>
@@ -191,7 +197,8 @@
             muscle: '@Model.TypeOfExercise',
             exerciseName:'@Model.ExerciseName',
             Weight: document.getElementById('enterWeight').value,
-            Reps: document.getElementById('enterReps').value
+            Reps: document.getElementById('enterReps').value,
+            note: document.getElementById('enterNote').value
         };
         $.post("/ExerciseManager/AddExecerise", progress, function (data) {
                 RedirectToPage('@Html.Raw(Url.Action("ManageExecerise", "ExerciseManager", new { ExerciseName = different.ExerciseName, TypeOfExercise = different.TypeOfExercise}))');

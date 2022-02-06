@@ -18,12 +18,14 @@ namespace TrackHealthAndFitness.Controllers
         private readonly IExerciseTrackerRepository exerciseTrackerDB = null;
         private readonly SignInManager<ApplicationUser> _signManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        public HomeController(ILogger<HomeController> logger, IExerciseTrackerRepository eDb, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public HomeController(ILogger<HomeController> logger, IExerciseTrackerRepository eDb, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager  )
         {
             exerciseTrackerDB = eDb;
             _logger = logger;
             _signManager = signInManager;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<IActionResult> Index()
@@ -31,10 +33,12 @@ namespace TrackHealthAndFitness.Controllers
             var user = await _userManager.GetUserAsync(HttpContext.User);
             if (user != null)
             {
+                await CreateRole();
                 return RedirectToAction("HomeExercise", "ExerciseManager");
             }
             else
             {
+                //await CreateRole();
                 return View();
             }
         }
@@ -43,6 +47,30 @@ namespace TrackHealthAndFitness.Controllers
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             return View();
+       
+
+        }
+
+        public async Task<IdentityRole> CreateRole()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            IdentityRole Role = await _roleManager.FindByIdAsync("PT");
+            await _userManager.AddToRoleAsync(user, Role.Name);
+            return Role;
+            /*
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var Role = new IdentityRole();
+            Role.Id = "PT";
+            Role.Name = "Personal Trainer";
+            await _userManager.AddToRoleAsync(user, "PT");
+            bool x = await _roleManager.RoleExistsAsync("PT");
+            if(!x)
+            {
+                await _roleManager.CreateAsync(Role);
+               
+            }  
+            return Role;
+            */
         }
 
 

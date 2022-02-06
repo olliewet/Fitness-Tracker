@@ -130,6 +130,7 @@ namespace TrackHealthAndFitness.Controllers
         }
         #endregion
 
+
         #region Get Average 
         public async Task<string> GetAverage(string ExerciseName)
         {
@@ -146,7 +147,7 @@ namespace TrackHealthAndFitness.Controllers
 
         
         [Authorize]
-        public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps)
+        public async Task<IActionResult> AddExecerise(ExerciseTracker.MuscleGroups muscle, string exerciseName, string Weight, string Reps, string note)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             ExerciseTracker exercise = exerciseTrackerDB.GetPersonalBestExercise(user.Id, exerciseName);
@@ -171,7 +172,8 @@ namespace TrackHealthAndFitness.Controllers
                 Date = DateTime.Today,
                 PersonalBest = personalbest,
                 Reps = int.Parse(Reps),
-                Weight = int.Parse(Weight)
+                Weight = int.Parse(Weight),
+                Note = note
             };
             await exerciseTrackerDB.Add(newExercise);
             return RedirectToAction("ManageExecerise", "ExerciseManager", new { ExerciseName = exerciseName, TypeOfExercise = muscle });

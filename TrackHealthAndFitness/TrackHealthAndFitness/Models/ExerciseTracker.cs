@@ -32,5 +32,6 @@ namespace TrackHealthAndFitness.Models
             Shoulders,
             Triceps
         }
+        public string Note { get; set; }
     }
 }
